@@ -50,16 +50,22 @@
   --radius-4xl: calc(var(--radius) + 16px);
 }
 
+
+
+
 body {
-    background-color: #0a0a0a;
-  color: whitesmoke;
+  background: var(--background);
+  color: var(--foreground);
   font-family: var(--font-aeonik), sans-serif;
 }
 
+
+
+
 :root {
   --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.141 0.005 285.823);
+   --background: #0a0a0a;
+  --foreground: whitesmoke;
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.141 0.005 285.823);
   --popover: oklch(1 0 0);

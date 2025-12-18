@@ -8,7 +8,7 @@ export default function Tabs(){
     const [active, setActive] = useState('All');
 
     return (
-        <div className="relative flex gap-6 border-b border-zinc-100/40">
+        <div className="relative flex justify-center overflow-hidden sm:justify-start gap-6 border-b border-zinc-100/40">
             {tabs.map((tab, index)=>(
                 <button 
                 key={index}
