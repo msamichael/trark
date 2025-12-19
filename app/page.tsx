@@ -3,6 +3,7 @@ import SearchBar from "./components/SearchBar";
 import SortBar from "./components/SortBar";
 import CategoryTab from "./components/CategoryTab";
 import ShowCard from "./components/ShowCard";
+import ShowGrid from './components/ShowGrid';
 
 export default async function Home() {
   async function getAnime() {
@@ -46,7 +47,7 @@ export default async function Home() {
         <section className="max-w-250 mx-auto w-full mt-13 ">
           {/* Search Bar & Sort  */}
           <div className="flex mb-8 gap-2 sticky top-2 z-10 
-          bg-(--color-background) p-3 rounded-3xl">
+          bg-(--color-background)/90 p-3 rounded-3xl">
             <div className="flex-2">
               <SearchBar />
             </div>
@@ -57,21 +58,8 @@ export default async function Home() {
           <CategoryTab />
 
           {/* Show Grid */}
-
-          <div className=" overflow-x-hidden grid grid-cols-2 
-          sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5
-           place-items-center items-start 
-           gap-y-5 sm:gap-y-10 gap-x-2 sm:gap-x-7 w-full mt-5">
-            {data.data.map((anime: any, index:number) => (
-              <ShowCard
-                key={anime.mal_id-index}
-                showImage={anime.images.webp.large_image_url}
-                showLink={anime.url}
-                showName={anime.title}
-                showAired={anime.aired.string}
-              />
-            ))}
-          </div>
+          <ShowGrid/>
+          
         </section>
       </main>
     </div>
