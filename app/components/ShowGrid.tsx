@@ -2,35 +2,47 @@
 
 import { useEffect, useState } from "react";
 import ShowCard from "./ShowCard";
+import { useSelector } from "react-redux";
+import { RootState } from "../store";
 
 export default function ShowGrid(){
-
-    const [showList, setShowList] = useState([]);
-    const [searchQuery, setSearchQuery] = useState('')
-    
-    
-    async function fetchAnime(query = '') {
-        try{
-          const endpoint = query? 
-          `https://api.jikan.moe/v4/anime?q=${query}&status=upcoming`:
-            'https://api.jikan.moe/v4/seasons/upcoming';
-            
-            const res = await fetch(endpoint);
-            const data = await res.json();
-            setShowList(data?.data || []);
-        }catch(err){
-            console.error(err)
-        }
+  
+  const [showList, setShowList] = useState([]);
+  const [loading, setLoading] = useState(false)    
+  const searchQuery = useSelector(
+    (state:RootState)=> state.search.searchQuery
+  );
+  
+  
+  
+  async function fetchAnime(query = '') {
+    setLoading(true);
+    try{
+      const endpoint = query
+      ? `https://api.jikan.moe/v4/anime?q=${query}&status=upcoming`
+      :'https://api.jikan.moe/v4/seasons/upcoming';
+      
+      const res = await fetch(endpoint);
+      const data = await res.json();
+      setShowList(data?.data || []);
+    }catch(err){
+      console.error(err)
+    }finally {
+      setLoading (false);
     }
+  }
+  
+  
+  useEffect(() => {
+      const debounceFetchAnime = setTimeout(()=> {
+        fetchAnime(searchQuery);}, 500);
 
-
-    useEffect(() => {
-    fetchAnime();
-    }, [])
+return ()=> clearTimeout(debounceFetchAnime);
+    }, [searchQuery])
     
     return (
         <div>
-          {showList.length === 0 ? (
+          {loading ? (
             <p>Loading...</p>
           ):(
 <div className=" overflow-x-hidden grid grid-cols-2 

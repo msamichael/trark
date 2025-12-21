@@ -2,16 +2,20 @@
 
 import { Input } from "@/components/ui/input";
 import { Dispatch, SetStateAction } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import type {RootState} from '@/app/store';
+import {setSearchQuery} from '@/app/store/searchSlice'
 
-type SearchBarProps = {
-  searchQuery: string;
-  setSearchQuery: Dispatch<SetStateAction<string>>;
-};
 
-export default function SearchBar({
-  searchQuery,
-  setSearchQuery,
-}: SearchBarProps) {
+
+
+export default function SearchBar() {
+  const searchQuery = useSelector(
+    (state:RootState)=> state.search.searchQuery
+  );
+
+  const dispatch = useDispatch();
+
   return (
     <div>
       <Input
@@ -21,7 +25,7 @@ export default function SearchBar({
          border-zinc-500 border rounded-xl focus:outline-none 
          focus:ring-1 focus:ring-zinc-600"
         value={searchQuery}
-        onChange={(e) => setSearchQuery(e.target.value)}
+        onChange={ (e) => dispatch(setSearchQuery(e.target.value))}
       />
     </div>
   );
