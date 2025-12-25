@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import ShowCard from "./ShowCard";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store";
-import { setShowList } from "../store/showSlice";
+import { setLastPage, setPage, setShowList } from "../store/showSlice";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   Pagination,
@@ -15,34 +15,25 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import { cn } from "@/lib/utils";
 
 export default function ShowGrid() {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
-  const { orderBy, page } = useSelector((state: RootState) => state.show);
+  const { orderBy, page, lastPage } = useSelector((state: RootState) => state.show);
   const searchQuery = useSelector(
     (state: RootState) => state.search.searchQuery
   );
   const showList = useSelector((state: RootState) => state.show.showList);
 
-  // async function fetchAnime(query = "") {
-  //   setLoading(true);
-  //   try {
-  //     const endpoint = query
-  //       ? `https://api.jikan.moe/v4/anime?q=${query}&status=upcoming`
-  //       : "https://api.jikan.moe/v4/seasons/upcoming";
+  function handlePageChange (newPage: number){
+    if (newPage >= 1 && newPage <= lastPage){
+      dispatch(setPage(newPage));
+    }
+  };
 
-  //     const res = await fetch(endpoint);
-  //     const result = await res.json();
-  //     dispatch(setShowList(result?.data || []));
-  //   } catch (err) {
-  //     console.error(err);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // }
 
-  async function fetchAnime(query = "") {
+  const fetchAnime = useCallback(async(query = "" as string) => {
     setLoading(true);
 
     const baseUrl = "https://api.jikan.moe/v4/anime";
@@ -63,19 +54,16 @@ export default function ShowGrid() {
       const res = await fetch(`${baseUrl}?${params.toString()}`);
       const result = await res.json();
       dispatch(setShowList(result?.data || []));
+
+      if (result.pagination){
+        dispatch(setLastPage(result.pagination.last_visible_page));
+      }
     } catch (err) {
       console.error("Fetch error:", err);
     } finally {
       setLoading(false);
     }
-  }
-
-  // async function fetchSortedAnime(){
-  //   const endpoint = `https://api.jikan.moe/v4/anime?q=${query}order_by=${orderBy}&sort=desc&page=${page}`
-  //   const res = await fetch(endpoint);
-  //   const result = await res.json();
-  //   dispatch(setShowList(result?.data || []))
-  // }
+  },[orderBy, page, searchQuery]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -106,11 +94,11 @@ export default function ShowGrid() {
           className=" overflow-x-hidden grid grid-cols-2 
           sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5
            place-items-center items-start 
-           gap-y-5 sm:gap-y-10 gap-x-2 sm:gap-x-7 w-full mt-5"
+           gap-y-5 sm:gap-y-10  sm:gap-x-7 w-full mt-5"
         >
           {showList.map((anime: any, index: number) => (
             <ShowCard
-              key={anime.mal_id + 2 * index}
+              key={`${anime.mal_id} - ${index}`}
               showImage={anime.images.webp.large_image_url}
               showLink={anime.url}
               showName={anime.title}
@@ -122,22 +110,68 @@ export default function ShowGrid() {
 
       <Pagination className="my-10">
         <PaginationContent>
+            {/* Previous Page */}
           <PaginationItem>
-            <PaginationPrevious 
-            href="#" 
-            onClick={(e)=>{
+            <PaginationPrevious
+              href="#"
+              onClick={(e) => {
+                e.preventDefault();
+                handlePageChange(page - 1);
+              }}
+            />
+          </PaginationItem>
+
+          {Array.from({length:3}).map((_,i)=>
+          {
+            const pageNumber = page + i;
+
+            if (pageNumber > lastPage-1){
+              return null;
+            }
+              
+
+            return(
+
+              <PaginationItem key={pageNumber} className={cn(pageNumber === page?"border border-zinc-200 rounded-md":"")}>
+            <PaginationLink href="#" 
+            
+            onClick={
+              (e)=>{
+                e.preventDefault();
+                handlePageChange(pageNumber);
+              }
+            }>{pageNumber}
+            </PaginationLink>
+          </PaginationItem>
+        );
+          }
+  
+          )}
+          {/* Ellipsis */}
+          
+          <PaginationItem>
+            <PaginationEllipsis />
+          </PaginationItem>
+
+          
+        
+          {/* Last Page */}
+          <PaginationItem className={cn(lastPage === page?"border  border-zinc-200 rounded-md":"")}>
+            <PaginationLink  href="#" onClick={
+              (e)=>{
               e.preventDefault();
-              handlePageChange(page-1);
-            }}/>
+              handlePageChange(lastPage);
+            }
+            }>{lastPage}
+            </PaginationLink>
           </PaginationItem>
+
+          {/* Next Button */}
           <PaginationItem>
-            <PaginationLink href="#">1</PaginationLink>
-          </PaginationItem>
-          <PaginationItem>
-            <PaginationEllipsis/>
-          </PaginationItem>
-          <PaginationItem>
-            <PaginationNext href='#'/>
+            <PaginationNext href="#" onClick={(e)=>{
+              e.preventDefault();
+              handlePageChange(page+1);
+            }} />
           </PaginationItem>
         </PaginationContent>
       </Pagination>

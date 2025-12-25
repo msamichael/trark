@@ -11,12 +11,14 @@ type ShowListState = {
   showList: Show[];
   orderBy: string;
   page: number;
+  lastPage: number;
 };
 
 const initialState: ShowListState = {
   showList: [],
   orderBy: "popularity",
   page: 1,
+  lastPage: 1,
 };
 
 const showSlice = createSlice({
@@ -30,8 +32,14 @@ const showSlice = createSlice({
         state.orderBy = action.payload;
         state.page = 1
     },
+    setPage(state, action){
+        state.page = action.payload;
+    },
+    setLastPage(state, action){
+        state.lastPage = action.payload;
+    }
   },
 });
 
-export const { setShowList, setSort } = showSlice.actions;
+export const { setShowList, setSort, setPage, setLastPage } = showSlice.actions;
 export default showSlice.reducer;

@@ -6,16 +6,11 @@ import ShowCard from "./components/ShowCard";
 import ShowGrid from './components/ShowGrid';
 
 export default async function Home() {
-  async function getAnime() {
-    const res = await fetch("https://api.jikan.moe/v4/seasons/upcoming");
-    return res.json();
-  }
 
-  const data = await getAnime();
 
   return (
     <div className="p-2.5 scroll-smooth">
-      <h2 className="text-2xl ml-5 mt-2">CineTracker</h2>
+      <h2 className="text-2xl ml-10 mt-2">Showmark</h2>
       <main>
         {/* Hero Section */}
         <header className=" relative overflow-hidden max-w-250 mx-auto mt-5 rounded-2xl border-2 md:border border-zinc-800 bg-zinc-900/30 group mb-2">
