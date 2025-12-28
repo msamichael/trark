@@ -1,22 +1,30 @@
 "use client";
 import Image from "next/image";
-import { Calendar, CalendarDays } from "lucide-react";
+import {  CalendarDays } from "lucide-react";
+import Link from "next/link";
+
+type ShowType = 'anime' | 'movies' | 'series';
+
 
 type ShowCardProps = {
+  showType : ShowType
   showImage: string;
-  showLink: string;
   showName: string;
-  showAired: string;
+  showReleaseDate: string;
+  showId:number
 };
 
 export default function ShowCard({
+  showType,
   showImage,
-  showLink,
   showName,
-  showAired,
+  showReleaseDate,
+  showId
 }: ShowCardProps) {
   return (
     <div className=" flex flex-col flex-wrap cursor-pointer group  w-[130px] sm:w-full ">
+      <Link href={`/${showType}/${showId}`}>
+      
       <div className="relative">
         <Image
           src={showImage}
@@ -35,11 +43,12 @@ export default function ShowCard({
   group-hover:opacity-100 group-hover:translate-y-0 ease-out "
         >
           <CalendarDays size={15} />
-          <p>{showAired === "Not available" ? "Date TBA" : showAired}</p>
+          <p>{showReleaseDate === "Not available" ? "Date TBA" : showReleaseDate.includes('to ?')?showReleaseDate.replace(/ to \?$/i, ""):showReleaseDate}</p>
         </div>
       </div>
-      <p className="hidden">{showLink}</p>
+      </Link>
       <p className="text-[12px] sm:text-sm text-wrap mt-1">{showName} </p>
     </div>
   );
 }
+ 

@@ -1,9 +1,9 @@
 import Image from "next/image";
-import SearchBar from "./components/SearchBar";
-import SortBar from "./components/SortBar";
-import CategoryTab from "./components/CategoryTab";
-import ShowCard from "./components/ShowCard";
-import ShowGrid from './components/ShowGrid';
+import SearchBar from "./components/ui/SearchBar";
+import SortBar from "./components/ui/SortBar";
+import CategoryTab from "./components/ui/CategoryTab";
+import ShowCard from "./components/ui/ShowCard";
+import ShowGrid from './components/layout/ShowGrid';
 
 export default async function Home() {
 

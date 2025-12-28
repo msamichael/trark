@@ -1,7 +1,6 @@
 "use client";
 
 import { Input } from "@/components/ui/input";
-import { Dispatch, SetStateAction } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import type {RootState} from '@/app/store';
 import {setSearchQuery} from '@/app/store/searchSlice'

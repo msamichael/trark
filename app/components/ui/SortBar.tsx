@@ -10,7 +10,7 @@ import {
 import { ArrowUpNarrowWide } from "lucide-react";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { setSort } from "../store/showSlice";
+import { setSort } from "@/app/store/showSlice";
 
 export default function SortBar() {
   const [selectSortValue, setSelectSortValue] = useState("popularity");

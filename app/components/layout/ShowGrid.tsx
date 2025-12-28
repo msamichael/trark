@@ -1,10 +1,10 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import ShowCard from "./ShowCard";
+import ShowCard from "../ui/ShowCard";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../store";
-import { setLastPage, setPage, setShowList } from "../store/showSlice";
+import { RootState } from "../../store";
+import { setLastPage, setPage, setShowList } from "../../store/showSlice";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   Pagination,
@@ -25,6 +25,7 @@ export default function ShowGrid() {
     (state: RootState) => state.search.searchQuery
   );
   const showList = useSelector((state: RootState) => state.show.showList);
+  const categoryTab = useSelector((state:RootState)=> state.tab.categoryTab);
 
   function handlePageChange (newPage: number){
     if (newPage >= 1 && newPage <= lastPage){
@@ -91,20 +92,28 @@ export default function ShowGrid() {
         </div>
       ) : (
         <div
-          className=" overflow-x-hidden grid grid-cols-2 
+          className=" overflow-x-hidden overflow-y-hidden grid grid-cols-2 
           sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5
            place-items-center items-start 
            gap-y-5 sm:gap-y-10  sm:gap-x-7 w-full mt-5"
         >
-          {showList.map((anime: any, index: number) => (
+          {showList.map((anime: any, index: number) => {
+            
+            const displayName = {
+              anime: anime.title,
+              movies: 'movies',
+              series: 'series'
+            }
+            return(
             <ShowCard
               key={`${anime.mal_id} - ${index}`}
               showImage={anime.images.webp.large_image_url}
-              showLink={anime.url}
-              showName={anime.title}
-              showAired={anime.aired.string}
+              showName= {displayName[categoryTab]}
+              showReleaseDate={anime.aired.string}
+              showType={categoryTab}
+              showId={anime.mal_id}
             />
-          ))}
+          )})}
         </div>
       )}
 
