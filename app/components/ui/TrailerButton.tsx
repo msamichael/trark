@@ -12,7 +12,7 @@ const dispatch = useDispatch();
 
   return (
 
-    <Button className="bg-zinc-200 text-black w-fit cursor-pointer " 
+    <Button className="bg-white text-black w-fit cursor-pointer " 
     onClick={()=>(
         dispatch(setShowTrailer(true))
     )}>
