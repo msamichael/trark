@@ -2,7 +2,7 @@
 
 import { setShowTrailer } from "@/app/store/trailerSlice";
 import { Button } from "@/components/ui/button";
-import { PlayIcon, X } from "lucide-react";
+import { Play, X } from "lucide-react";
 import { useDispatch } from "react-redux";
 
 
@@ -16,7 +16,7 @@ const dispatch = useDispatch();
     onClick={()=>(
         dispatch(setShowTrailer(true))
     )}>
-      <PlayIcon />
+      <Play />
       Watch Trailer
     </Button>
      

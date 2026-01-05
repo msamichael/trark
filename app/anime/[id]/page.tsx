@@ -121,9 +121,9 @@ export default async function AnimePage({ params }: AnimePageProps) {
             </h1>
             <div className="flex flex-col gap-4.5">
               {/* Countdown  */}
-              <p className=" flex items-center justify-start gap-2 rounded-full border border-indigo-500/30
+              <p className=" flex items-center justify-start gap-2 rounded-full border border-indigo-500/60
                bg-indigo-500/10 text-sm w-fit
-              px-2 py-0.5 font-medium text-indigo-300">
+              px-2 py-0.5 font-medium text-indigo-400">
                 <Clock className="h-[15px]"/>
                 {formatCountdown(animeData.aired.from)}
               </p>

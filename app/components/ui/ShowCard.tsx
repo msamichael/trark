@@ -1,17 +1,16 @@
 "use client";
 import Image from "next/image";
-import {  CalendarDays } from "lucide-react";
+import { CalendarDays } from "lucide-react";
 import Link from "next/link";
 
-type ShowType = 'anime' | 'movies' | 'series';
-
+type ShowType = "anime" | "movies" | "series";
 
 type ShowCardProps = {
-  showType : ShowType
+  showType: ShowType;
   showImage: string;
   showName: string;
   showReleaseDate: string;
-  showId:number
+  showId: number;
 };
 
 export default function ShowCard({
@@ -19,36 +18,47 @@ export default function ShowCard({
   showImage,
   showName,
   showReleaseDate,
-  showId
+  showId,
 }: ShowCardProps) {
   return (
-    <div className=" flex flex-col flex-wrap cursor-pointer group  w-[130px] sm:w-full ">
-      <Link href={`/${showType}/${showId}`}>
-      
-      <div className="relative">
-        <Image
-          src={showImage}
-          width={230}
-          height={300}
-          loading="lazy"
-          className="object-cover transition-transform duration-300 ease-out
+    <div className=" flex flex-col cursor-pointer group  w-[130px] sm:w-full ">
+      <Link href={`/${showType}/${showId}`} className="block">
+        <div className="relative">
+          {showImage ? (
+            <Image
+              src={showImage}
+              width={230}
+              height={300}
+              loading="lazy"
+              className="object-cover transition-transform duration-300 ease-out
       group-hover:scale-102 group-hover:shadow-xl rounded 
       h-[170px] sm:h-[300px] w-[130px] sm:w-[230px]"
-          alt={"The Show's Image"}
-        />
+              alt={showName + " poster"}
+            />
+          ) : (
+            <div className="bg-zinc-800 flex items-center justify-center">
+              No Image
+            </div>
+          )}
 
-        <div
-          className="flex gap-1 items-center absolute bottom-2 left-1 bg-black/80 text-white text-sm
+          <div
+            className="flex gap-1 items-center absolute bottom-2 left-1 
+            bg-black/80 text-white text-sm
   px-1 py-1 rounded-md opacity-0 translate-y-4 transition-all 
   group-hover:opacity-100 group-hover:translate-y-0 ease-out "
-        >
-          <CalendarDays size={15} />
-          <p>{showReleaseDate === "Not available" ? "Date TBA" : showReleaseDate.includes('to ?')?showReleaseDate.replace(/ to \?$/i, ""):showReleaseDate}</p>
+          >
+            <CalendarDays size={15} />
+            <p>
+              {showReleaseDate === "Not available"
+                ? "Date TBA"
+                : showReleaseDate.includes("to ?")
+                ? showReleaseDate.replace(/ to \?$/i, "")
+                : showReleaseDate}
+            </p>
+          </div>
         </div>
-      </div>
       </Link>
-      <p className="text-[12px] sm:text-sm text-wrap mt-1">{showName} </p>
+      <p className="text-[12px] sm:text-sm mt-1 truncate">{showName} </p>
     </div>
   );
 }
- 
