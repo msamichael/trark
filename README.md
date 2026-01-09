@@ -1,36 +1,96 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Trark 🎬
 
-## Getting Started
+A modern, responsive web application for tracking upcoming movies, TV series, and anime. Built with Next.js, TypeScript and Redux, it features real-time filtering, countdowns, and a seamless search experience using the TMDB and Jikan APIs.
 
-First, run the development server:
+## ✨ Features
+- Toggle between Movies, TV Series, and Anime.
+- View upcoming releases in a responsive grid layout.
+- Search upcoming anime or movie titles.
+- Each Shows displays a live countdown to its expected release date.
+- Sorting by release date, title, popularity
+- Pagination.
+- Watch trailers directly in-app (where available).
+- Skeleton loaders with shimmer for better UX
+- Clean, responsive UI with Tailwind CSS
 
-```bash
+## 🛠️ Tech Stack
+- Next.js (App Router)
+- TypeScript
+- Redux Toolkit (RTK)
+- Tailwind CSS
+- Lucide React Icons
+- TMDB (The Movie Database) & Jikan (Unofficial MyAnimeList API)
+
+## 📡 APIs Used
+ **Anime**
+
+  #### Jikan API
+
+- Endpoint: /v4/seasons/upcoming
+
+- Used to fetch upcoming anime data from MyAnimeList
+
+  **Movies / Series**
+
+  #### TMDB API
+
+- Used for upcoming movies and TV shows
+
+
+## 🧠 Architecture Decisions
+
+- Server-side fetching is used where possible for performance and security
+
+- API responses are normalized before being used in UI components
+
+- External APIs are accessed via Next.js API routes to avoid exposing keys
+
+## 🔍 Search Implementation
+
+- Search is powered by the Jikan & TMDB search API
+
+- Input is debounced to avoid unnecessary API calls
+
+- Results update dynamically as the user types
+
+## 🖼️ Image Handling
+
+- Images are loaded using Next.js <Image />
+
+- Supports fallback images when posters are unavailable
+
+- Optimized for performance and responsiveness
+
+## 🧪 Planned Updates
+
+- ✅ Tracklist feature
+
+- ✅ User authentication
+
+- ✅ Release notifications
+
+- ✅ Anticipated show section
+
+- ✅ Api fetching securely through Next.js API routes and server-side caching
+
+
+## 📦 Installation & Setup
+# Clone the repository
+git clone https://github.com/msamicahel/trark.git
+
+# Navigate into the project
+cd trark
+
+# Install dependencies
+npm install
+
+# Run the development server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open http://localhost:3000 in your browser.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🔑 Environment Variables
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- If using TMDB:
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+TMDB_API_ACCESS_TOKEN=your_api_access_token_here

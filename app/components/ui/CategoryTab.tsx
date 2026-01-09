@@ -7,7 +7,7 @@ import type {RootState} from '@/app/store';
 
 
 export default function Tabs(){
-    const tabs = ['all', 'movies', 'series', 'anime'];
+    const tabs = ['movies', 'series', 'anime'];
 
     const categoryTab = useSelector((state:RootState)=> state.tab.categoryTab);
 

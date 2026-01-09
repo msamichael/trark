@@ -228,7 +228,7 @@ export default async function AnimePage({ params }: AnimePageProps) {
 
                   <p className="text-sm">{cast.character.name}</p>
                   {cast.voice_actors[0] && (
-                    <p className="text-[12px] text-zinc-400 line-clamp-1">
+                    <p className="text-[12px] text-zinc-400 line-clamp-2">
                       {cast.voice_actors[0].person.name}
                     </p>
                   )}

@@ -7,7 +7,7 @@ type TabState = {
 };
 
 const initialState: TabState = {
-    categoryTab : 'anime',
+    categoryTab : 'movies',
 }
 
 const categorySlice = createSlice({

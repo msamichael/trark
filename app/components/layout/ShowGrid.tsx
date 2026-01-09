@@ -136,17 +136,23 @@ export default function ShowGrid() {
     const timer = setTimeout(() => {
       if (categoryTab === "movies") {
         fetchTMDB("movie", searchQuery);
-        console.log(showList[0])
-      } else if (categoryTab === "series") {
+         } else if (categoryTab === "series") {
         fetchTMDB("tv", searchQuery);
-        console.log(showList[0])
-      } else {
+         } else {
         fetchAnime(searchQuery);
       }
     }, delay);
 
     return () => clearTimeout(timer);
   }, [searchQuery, orderBy, page, categoryTab]);
+
+  // Reset page to 1 whenever the search query OR the category tab changes
+useEffect(() => {
+  dispatch(setPage(1));
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth'});
+}, [searchQuery, categoryTab, dispatch]);
 
   const displayList = showList.filter ((show:any)=> {
     if (categoryTab === 'anime') return true;
@@ -156,12 +162,11 @@ export default function ShowGrid() {
    const releaseDate = new Date(dateStr);
   const bufferDate = new Date();
   
-  // CRITICAL: Set today's time to the very beginning of the day
+  // Set today's time to the very beginning of the day
   bufferDate.setDate(bufferDate.getDate()-14);
   bufferDate.setHours(0, 0, 0, 0);
   releaseDate.setHours(0,0,0,0);
 
-  // Use >= so movies releasing today aren't hidden
   return releaseDate >= bufferDate;})
 
   return (
@@ -228,7 +233,11 @@ export default function ShowGrid() {
       <Button
         variant="link"
         className="mt-4 text-indigo-400 hover:text-indigo-300"
-        onClick={() => dispatch(setSearchQuery(""))}
+        onClick={() => {
+
+        
+          dispatch(setPage(1))
+          dispatch(setSearchQuery(""))}}
       >
         Clear search and browse all
       </Button>
@@ -255,32 +264,32 @@ export default function ShowGrid() {
 
             const pages: (number | "ellipsis")[] = [];
            
-            // Always show page 1
+            // page 1
             pages.push(1);
 
-            // Add ellipsis if needed
+            // Adds ellipsis if needed
             if (page > 3) {
               pages.push("ellipsis");
             }
 
-            // Show range around current page (e.g., current-2 to current+2, clamped)
+            //range around current page 
             const start = Math.max(2, page - 2);
             const end = Math.min(lastPage - 1, page + 2);
             for (let i = start; i <= end; i++) {
               pages.push(i);
             }
 
-            // Add ellipsis before last page if needed
+            // Adds ellipsis before last page if needed
             if (page < lastPage - 2) {
               pages.push("ellipsis");
             }
 
-            // Always show last page (if > 1)
+            //  last page
             if (lastPage > 1) {
               pages.push(lastPage);
             }
 
-            // Remove duplicate ellipsis or pages
+            // Removes duplicate ellipsis or pages
             const uniquePages = pages.filter((p, index) =>
               p === "ellipsis" ? pages[index - 1] !== "ellipsis" : true
             );

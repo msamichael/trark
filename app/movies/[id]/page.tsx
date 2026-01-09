@@ -21,7 +21,6 @@ export default async function MoviePage({ params }: MoviePageProps) {
     }
   };
 
-  // Fetch Movie Details, Cast, and Videos (for trailer) in parallel
   const [movieRes, creditsRes, videoRes] = await Promise.all([
     fetch(`https://api.themoviedb.org/3/movie/${id}?language=en-US`, API_OPTIONS),
     fetch(`https://api.themoviedb.org/3/movie/${id}/credits?language=en-US`, API_OPTIONS),
@@ -32,9 +31,6 @@ export default async function MoviePage({ params }: MoviePageProps) {
   const creditsData = await creditsRes.json();
   const videoData = await videoRes.json();
 
-  // DEBUG LOG - Check your VS Code terminal (not the browser console!)
-  console.log("Status:", movieRes.status);
-  console.log("Data:", movieData);
 
   if (!movieData || movieData.success === false) {
     return (
@@ -48,12 +44,11 @@ export default async function MoviePage({ params }: MoviePageProps) {
     );
   }
 
-  // Find the YouTube trailer from the video results
   const trailer = videoData.results?.find(
     (vid: any) => vid.site === "YouTube"  && (vid.type === "Trailer" || vid.type === "Teaser")
   );
+  const hasNoTrailer = !trailer;
   
-  // This version prevents the crash by checking if 'trailer' exists first
 const trailerUrl = trailer 
   ? `https://www.youtube.com/embed/${trailer.key}?autoplay=1` 
   : undefined;
@@ -206,7 +201,7 @@ const trailerUrl = trailer
                     />
                   </div>
                   <p className="text-sm font-medium text-white line-clamp-1">{actor.name}</p>
-                  <p className="text-xs text-zinc-500 line-clamp-1">{actor.character}</p>
+                  <p className="text-xs text-zinc-500 line-clamp-2">{actor.character}</p>
                 </div>
               ))}
             </div>

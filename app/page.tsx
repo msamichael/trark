@@ -1,4 +1,4 @@
-import Image from "next/image";
+
 import SearchBar from "./components/ui/SearchBar";
 import SortBar from "./components/ui/SortBar";
 import CategoryTab from "./components/ui/CategoryTab";
@@ -9,10 +9,10 @@ export default async function Home() {
 
   return (
     <div className="p-2.5 scroll-smooth">
-      <h2 className="text-2xl ml-10 mt-2">Showmark</h2>
+      <h2 className="text-2xl ml-4 mt-2 font-bold">Trark</h2>
       <main>
         {/* Hero Section */}
-        <header className=" relative overflow-hidden max-w-250 mx-auto mt-5 rounded-2xl border-2 md:border border-zinc-800 bg-zinc-900/30 group mb-2">
+        <header className=" relative overflow-hidden max-w-300 mx-auto mt-5 rounded-2xl border-2 md:border border-zinc-800 bg-zinc-900/30 group mb-2">
           <div className="absolute inset-0 z-0">
             <div className="bg-gradient-radial-top-right from-indigo-900/60 via-zinc-900/0 to-zinc-900/0 opacity-50 w-full h-full">
               {" "}

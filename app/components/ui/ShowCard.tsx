@@ -45,7 +45,7 @@ export default function ShowCard({
       h-[170px] sm:h-[300px] w-[130px] sm:w-[230px]"
               alt={showName + " poster"}
             />
-          )}
+         )}
 
           <div
             className="flex gap-1 items-center absolute bottom-2 left-1 
@@ -64,7 +64,7 @@ export default function ShowCard({
           </div>
         </div>
       </Link>
-      <p className="text-[12px] sm:text-sm mt-1 truncate">{showName} </p>
+      <p className="text-[12px] sm:text-sm mt-1 line-clamp-2">{showName} </p>
     </div>
   );
 }
