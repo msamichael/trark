@@ -2,7 +2,6 @@ import Image from "next/image";
 import SearchBar from "./components/ui/SearchBar";
 import SortBar from "./components/ui/SortBar";
 import CategoryTab from "./components/ui/CategoryTab";
-import ShowCard from "./components/ui/ShowCard";
 import ShowGrid from './components/layout/ShowGrid';
 
 export default async function Home() {
@@ -39,7 +38,7 @@ export default async function Home() {
         </header>
 
         {/* Show Section*/}
-        <section className="max-w-250 mx-auto w-full mt-13 ">
+        <section className="max-w-300 mx-auto w-full mt-13 ">
           {/* Search Bar & Sort  */}
           <div className="flex mb-8 gap-2 sticky top-2 z-10 
           bg-(--color-background)/90 p-3 rounded-3xl">

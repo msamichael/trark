@@ -5,6 +5,8 @@ type Show = {
   showLink: string;
   title: string;
   showAired: string;
+  release_date: string;
+  first_air_date:string
 };
 
 type ShowListState = {

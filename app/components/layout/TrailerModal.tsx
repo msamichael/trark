@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { RootState } from '@/app/store';
 import CloseButton from '@/app/components/ui/CloseButton';
 
-export default function TrailerModal({ trailerUrl }: { trailerUrl: string }) {
+export default function TrailerModal({ trailerUrl }: { trailerUrl: string | undefined}) {
  
     const showTrailer = useSelector((state: RootState) => state.trailer.showTrailer);
 

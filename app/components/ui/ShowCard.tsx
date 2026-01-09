@@ -36,9 +36,15 @@ export default function ShowCard({
               alt={showName + " poster"}
             />
           ) : (
-            <div className="bg-zinc-800 flex items-center justify-center">
-              No Image
-            </div>
+             <Image
+              src={'/no-poster.png'}
+              width={230}
+              height={300}
+              loading="lazy"
+              className="object-cover  rounded 
+      h-[170px] sm:h-[300px] w-[130px] sm:w-[230px]"
+              alt={showName + " poster"}
+            />
           )}
 
           <div
