@@ -1,7 +1,9 @@
 "use client";
 import Image from "next/image";
-import { CalendarDays } from "lucide-react";
+import { CalendarDays,BookmarkIcon  } from "lucide-react";
 import Link from "next/link";
+import { Toggle } from "@/components/ui/toggle";
+import { useState } from "react";
 
 type ShowType = "anime" | "movies" | "series";
 
@@ -20,8 +22,23 @@ export default function ShowCard({
   showReleaseDate,
   showId,
 }: ShowCardProps) {
+
+const [bookmarked, setbookmarked] = useState(false);
+
   return (
-    <div className=" flex flex-col cursor-pointer group  w-[180px] sm:w-full ">
+    <div className="relative flex flex-col cursor-pointer group  w-[180px] sm:w-full ">
+      <div className="absolute top-0.5 right-0.5 z-10 ">
+        <Toggle
+          aria-label="bookmark"
+          size={"sm"}
+          variant={"outline"}
+          pressed={bookmarked}
+          onPressed
+          className="cursor-pointer data-[state=on]:bg-transparent data-[state=on]:*:[svg]:fill-red-500 data-[state=on]:*:[svg]:stroke-red-500"
+        >
+          <BookmarkIcon />
+        </Toggle>
+      </div>
       <Link href={`/${showType}/${showId}`} className="block">
         <div className="relative">
           {showImage ? (
@@ -29,23 +46,21 @@ export default function ShowCard({
               src={showImage}
               width={230}
               height={300}
-              loading="lazy"
               className="object-cover transition-transform duration-300 ease-out
       group-hover:scale-102 group-hover:shadow-xl rounded 
       h-[240px] sm:h-[300px] w-[180px] sm:w-[230px]"
-              alt={showName + " poster"}
+              alt={`${showName} poster`}
             />
           ) : (
-             <Image
-              src={'/no-poster.png'}
+            <Image
+              src={"/no-poster.png"}
               width={230}
               height={300}
-              loading="lazy"
               className="object-cover  rounded 
       h-[170px] sm:h-[300px] w-[130px] sm:w-[230px]"
-              alt={showName + " poster"}
+              alt={`${showName} poster`}
             />
-         )}
+          )}
 
           <div
             className="flex gap-1 items-center absolute bottom-2 left-1 
