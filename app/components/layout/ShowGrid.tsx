@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import ShowCard from "../ui/ShowCard";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store";
@@ -154,6 +154,10 @@ useEffect(() => {
     behavior: 'smooth'});
 }, [searchQuery, categoryTab, dispatch]);
 
+useEffect(()=>{
+  dispatch(setSearchQuery(""));
+},[categoryTab]) 
+
   const displayList = showList.filter ((show:any)=> {
     if (categoryTab === 'anime') return true;
 
@@ -163,7 +167,7 @@ useEffect(() => {
   const bufferDate = new Date();
   
   // Set today's time to the very beginning of the day
-  bufferDate.setDate(bufferDate.getDate()-14);
+  bufferDate.setDate(bufferDate.getDate()-7);
   bufferDate.setHours(0, 0, 0, 0);
   releaseDate.setHours(0,0,0,0);
 

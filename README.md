@@ -19,6 +19,7 @@ A modern, responsive web application for tracking upcoming movies, TV series, an
 - Redux Toolkit (RTK)
 - Tailwind CSS
 - Lucide React Icons
+- Shadcn
 - TMDB (The Movie Database) & Jikan (Unofficial MyAnimeList API)
 
 ## 📡 APIs Used
@@ -75,22 +76,22 @@ A modern, responsive web application for tracking upcoming movies, TV series, an
 
 
 ## 📦 Installation & Setup
-# Clone the repository
+## Clone the repository
 git clone https://github.com/msamicahel/trark.git
 
-# Navigate into the project
+## Navigate into the project
 cd trark
 
-# Install dependencies
+## Install dependencies
 npm install
 
-# Run the development server
+## Run the development server
 npm run dev
 
 Open http://localhost:3000 in your browser.
 
 ## 🔑 Environment Variables
 
-- If using TMDB:
+If using TMDB:
 
 TMDB_API_ACCESS_TOKEN=your_api_access_token_here

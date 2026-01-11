@@ -21,7 +21,7 @@ export default function ShowCard({
   showId,
 }: ShowCardProps) {
   return (
-    <div className=" flex flex-col cursor-pointer group  w-[130px] sm:w-full ">
+    <div className=" flex flex-col cursor-pointer group  w-[180px] sm:w-full ">
       <Link href={`/${showType}/${showId}`} className="block">
         <div className="relative">
           {showImage ? (
@@ -32,7 +32,7 @@ export default function ShowCard({
               loading="lazy"
               className="object-cover transition-transform duration-300 ease-out
       group-hover:scale-102 group-hover:shadow-xl rounded 
-      h-[170px] sm:h-[300px] w-[130px] sm:w-[230px]"
+      h-[240px] sm:h-[300px] w-[180px] sm:w-[230px]"
               alt={showName + " poster"}
             />
           ) : (
