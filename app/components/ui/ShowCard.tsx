@@ -32,8 +32,6 @@ const [bookmarked, setbookmarked] = useState(false);
           aria-label="bookmark"
           size={"sm"}
           variant={"outline"}
-          pressed={bookmarked}
-          onPressed
           className="cursor-pointer data-[state=on]:bg-transparent data-[state=on]:*:[svg]:fill-red-500 data-[state=on]:*:[svg]:stroke-red-500"
         >
           <BookmarkIcon />
