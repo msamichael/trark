@@ -21,25 +21,11 @@ export default function WatchlistGrid({
 }: WatchlistGridProps) {
   if (loading) {
     return (
-      <div className="space-y-8">
-        {/* Upcoming Section Skeleton */}
-        <div className="space-y-4">
-          <Skeleton className="h-6 w-32" />
-          <div className="space-y-3">
-            {[...Array(5)].map((_, i) => (
-              <Skeleton key={i} className="h-[140px] rounded-xl" />
-            ))}
-          </div>
-        </div>
-        
-        {/* All Shows Section Skeleton */}
-        <div className="space-y-4">
-          <Skeleton className="h-6 w-32" />
-          <div className="space-y-3">
-            {[...Array(5)].map((_, i) => (
-              <Skeleton key={i} className="h-[140px] rounded-xl" />
-            ))}
-          </div>
+      <div className="space-y-4">
+        <div className="space-y-3">
+          {[...Array(10)].map((_, i) => (
+            <Skeleton key={i} className="h-[140px] rounded-xl" />
+          ))}
         </div>
       </div>
     );

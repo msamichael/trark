@@ -8,8 +8,10 @@ import { useRehydrateBookmarks } from "../hooks/useRehydrateBookmarks";
 import { useSyncBookmarksToLocalStorage } from "../hooks/useSyncBookmarksToLocalStorage";
 import WatchlistGrid from "./components/WatchlistGrid";
 import { Button } from "@/components/ui/button";
-import { Trash2 } from "lucide-react";
+import { Trash2, Search } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const TMDB_API_ACCESS_TOKEN = process.env.NEXT_PUBLIC_TMDB_API_ACCESS_TOKEN;
 
@@ -29,6 +31,8 @@ export default function WatchlistPage() {
   const [watchlistData, setWatchlistData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [clearing, setClearing] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [sortBy, setSortBy] = useState("title");
   
   const user = false;
   const hasRehydrated = useRehydrateBookmarks(!!user);
@@ -55,15 +59,15 @@ export default function WatchlistPage() {
           if (bookmark.type === "anime") {
             const res = await fetch(`https://api.jikan.moe/v4/anime/${bookmark.id}`);
             const data = await res.json();
+            
             return {
-              ...data.data,
+              id: bookmark.id,
               type: "anime",
-              id: data.data.mal_id,
-              title: data.data.title,
-              name: data.data.title,
-              poster_path: data.data.images?.webp?.large_image_url,
-              release_date: data.data.aired?.string,
-              first_air_date: data.data.aired?.string,
+              title: data.data?.title || "Unknown",
+              name: data.data?.title || "Unknown",
+              poster_path: data.data?.images?.webp?.large_image_url,
+              release_date: data.data?.aired?.string || "TBA",
+              first_air_date: data.data?.aired?.string || "TBA",
             };
           } else {
             const endpoint = bookmark.type === "movies" ? "movie" : "tv";
@@ -72,24 +76,33 @@ export default function WatchlistPage() {
               API_OPTIONS
             );
             const data = await res.json();
+            
             return {
-              ...data,
+              id: bookmark.id,
               type: bookmark.type,
-              id: data.id,
+              title: data.title || data.name || "Unknown",
+              name: data.title || data.name || "Unknown",
               poster_path: data.poster_path,
-              release_date: data.release_date || data.first_air_date,
-              first_air_date: data.first_air_date || data.release_date,
+              release_date: data.release_date || data.first_air_date || "TBA",
+              first_air_date: data.first_air_date || data.release_date || "TBA",
             };
           }
         } catch (error) {
           console.error(`Error fetching ${bookmark.type} ${bookmark.id}:`, error);
-          return null;
+          return {
+            id: bookmark.id,
+            type: bookmark.type,
+            title: "Error Loading",
+            name: "Error Loading",
+            poster_path: null,
+            release_date: "TBA",
+            first_air_date: "TBA",
+          };
         }
       });
 
       const results = await Promise.all(promises);
-      const validData = results.filter((item) => item !== null);
-      setWatchlistData(validData);
+      setWatchlistData(results);
     } catch (error) {
       console.error("Error fetching watchlist data:", error);
       setWatchlistData([]);
@@ -109,6 +122,30 @@ export default function WatchlistPage() {
       }, 500);
     }
   };
+
+  // Filter and sort watchlist data
+  const filteredData = watchlistData.filter((show) => {
+    // Search filter
+    const searchLower = searchQuery.toLowerCase();
+    const showName = (show.title || show.name || "").toLowerCase();
+    if (!showName.includes(searchLower)) {
+      return false;
+    }
+    return true;
+  }).sort((a, b) => {
+    switch (sortBy) {
+      case "title":
+        const nameA = (a.title || a.name || "").toLowerCase();
+        const nameB = (b.title || b.name || "").toLowerCase();
+        return nameA.localeCompare(nameB);
+      case "date":
+        const dateA = a.release_date || a.first_air_date || a.aired?.string || "";
+        const dateB = b.release_date || b.first_air_date || b.aired?.string || "";
+        return new Date(dateA).getTime() - new Date(dateB).getTime();
+      default:
+        return 0;
+    }
+  });
 
   if (!hasRehydrated) {
     return (
@@ -134,7 +171,7 @@ export default function WatchlistPage() {
           <div>
             <h1 className="text-3xl font-bold text-white mb-2">My Watchlist</h1>
             <p className="text-zinc-400">
-              {bookmarks.length} {bookmarks.length === 1 ? "show" : "shows"} saved
+              {filteredData.length} {filteredData.length === 1 ? "show" : "shows"} saved
             </p>
           </div>
           
@@ -152,9 +189,35 @@ export default function WatchlistPage() {
           )}
         </div>
 
+        {/* Search and Sort Controls */}
+        <div className="space-y-4 mb-8">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-zinc-500 w-4 h-4" />
+            <Input
+              type="text"
+              placeholder="Search watchlist..."
+              className="pl-10 bg-zinc-900/50 border-zinc-700 text-white placeholder-zinc-500"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
+          
+          <div className="flex justify-end">
+            <Select value={sortBy} onValueChange={setSortBy}>
+              <SelectTrigger className="w-[180px] bg-zinc-900/50 border-zinc-700 text-white">
+                <SelectValue placeholder="Sort by" />
+              </SelectTrigger>
+              <SelectContent className="bg-zinc-900 border-zinc-700">
+                <SelectItem value="title">Title (A-Z)</SelectItem>
+                <SelectItem value="date">Release Date</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+
         {/* Watchlist Grid */}
         <WatchlistGrid
-          watchlistData={watchlistData}
+          watchlistData={filteredData}
           loading={loading}
           onToggleBookmark={toggleBookmark}
           isBookmarked={isBookmarked}

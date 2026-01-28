@@ -1,15 +1,27 @@
 
+
 import SearchBar from "./components/ui/SearchBar";
 import SortBar from "./components/ui/SortBar";
 import CategoryTab from "./components/ui/CategoryTab";
 import ShowGrid from './components/layout/ShowGrid';
+import Link from "next/link";
+import { BookmarkIcon } from "lucide-react";
 
 export default async function Home() {
 
 
   return (
     <div className="p-2.5 scroll-smooth">
-      <h2 className="text-2xl ml-4 mt-2 font-bold">Trark</h2>
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-2xl ml-4 mt-2 font-bold">Trark</h2>
+        <Link 
+          href="/watchlist"
+          className="mr-4 flex items-center gap-2 bg-zinc-900/50 hover:bg-zinc-900/80 px-4 py-2 rounded-lg border border-zinc-800 transition-all"
+        >
+          <BookmarkIcon size={20} />
+          <span className="text-sm">Watchlist</span>
+        </Link>
+      </div>
       <main>
         {/* Hero Section */}
         <header className=" relative overflow-hidden max-w-300 mx-auto mt-5 rounded-2xl border-2 md:border border-zinc-800 bg-zinc-900/30 group mb-2">

@@ -30,7 +30,6 @@ export default function WatchlistCard({
   const formatDate = (dateString: string) => {
     if (!dateString) return "TBA";
     
-    // Try to extract date from string
     const dateMatch = dateString.match(/(\d{4}-\d{2}-\d{2})/);
     if (dateMatch) {
       const date = new Date(dateMatch[1]);
@@ -41,7 +40,6 @@ export default function WatchlistCard({
       });
     }
     
-    // If no standard date format, return as is
     return dateString;
   };
 
@@ -69,10 +67,7 @@ export default function WatchlistCard({
   };
 
   return (
-    <div className="relative w-full sm:w-[350px] bg-zinc-900/50 rounded-xl overflow-hidden border border-zinc-800 group">
-      {/* Background gradient effect */}
-      <div className="absolute inset-0 bg-gradient-to-br from-zinc-900 via-zinc-800 to-zinc-900 opacity-90" />
-      
+    <div className="relative w-full sm:w-[350px] bg-zinc-900/50 rounded-xl overflow-hidden border border-zinc-800 group hover:shadow-xl transition-all duration-300">
       {/* Card content */}
       <div className="relative flex items-center gap-4 p-4">
         {/* Poster */}
