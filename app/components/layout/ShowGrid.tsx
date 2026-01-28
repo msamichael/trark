@@ -19,6 +19,9 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { setSearchQuery } from "@/app/store/searchSlice";
 import { Search } from "lucide-react";
+import { useBookmarkActions } from "@/app/hooks/useBookmarkActions";
+import { useSyncBookmarksToLocalStorage } from "@/app/hooks/useSyncBookmarksToLocalStorage";
+import { useRehydrateBookmarks } from "@/app/hooks/useRehydrateBookmarks";
 
 const TMDB_API_ACCESS_TOKEN = process.env.NEXT_PUBLIC_TMDB_API_ACCESS_TOKEN;
 
@@ -34,15 +37,61 @@ const API_OPTIONS = {
 
 export default function ShowGrid() {
   const dispatch = useDispatch();
+
   const [loading, setLoading] = useState(false);
+
   const { orderBy, page, lastPage } = useSelector(
     (state: RootState) => state.show
   );
   const searchQuery = useSelector(
     (state: RootState) => state.search.searchQuery
   );
+  const bookmarks = useSelector(
+  (state: RootState) => state.bookmark.bookmarks
+  );
   const showList = useSelector((state: RootState) => state.show.showList);
   const categoryTab = useSelector((state: RootState) => state.tab.categoryTab);
+
+const { isBookmarked, toggleBookmark } = useBookmarkActions();
+
+const user = false;
+
+const hasRehydrated = useRehydrateBookmarks(!!user);
+
+useSyncBookmarksToLocalStorage(bookmarks,!!user, hasRehydrated);
+
+ // ADD THIS: Don't render cards until bookmarks are loaded
+  const isReady = hasRehydrated;
+
+  
+// ADD THIS DEBUG
+console.log('🎬 ShowGrid render:', {
+  hasRehydrated,
+  bookmarksLength: bookmarks.length,
+  bookmarks: bookmarks,
+  isReady: hasRehydrated
+});
+
+  // ... rest of your code stays the same ...
+
+  const displayList = showList.filter((show: any) => {
+    if (categoryTab === "anime") return true;
+
+    const dateStr = show.release_date || show.first_air_date;
+    if (!dateStr) return false;
+    const releaseDate = new Date(dateStr);
+    const bufferDate = new Date();
+
+    // Set today's time to the very beginning of the day
+    bufferDate.setDate(bufferDate.getDate() - 7);
+    bufferDate.setHours(0, 0, 0, 0);
+    releaseDate.setHours(0, 0, 0, 0);
+
+    return releaseDate >= bufferDate;
+  });
+
+  
+
 
   function handlePageChange(newPage: number) {
     if (newPage >= 1 && newPage <= lastPage) {
@@ -136,9 +185,9 @@ export default function ShowGrid() {
     const timer = setTimeout(() => {
       if (categoryTab === "movies") {
         fetchTMDB("movie", searchQuery);
-         } else if (categoryTab === "series") {
+      } else if (categoryTab === "series") {
         fetchTMDB("tv", searchQuery);
-         } else {
+      } else {
         fetchAnime(searchQuery);
       }
     }, delay);
@@ -147,35 +196,21 @@ export default function ShowGrid() {
   }, [searchQuery, orderBy, page, categoryTab]);
 
   // Reset page to 1 whenever the search query OR the category tab changes
-useEffect(() => {
-  dispatch(setPage(1));
-  window.scrollTo({
-    top: 0,
-    behavior: 'smooth'});
-}, [searchQuery, categoryTab, dispatch]);
+  useEffect(() => {
+    dispatch(setPage(1));
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  }, [searchQuery, categoryTab, dispatch]);
 
-useEffect(()=>{
-  dispatch(setSearchQuery(""));
-},[categoryTab]) 
-
-  const displayList = showList.filter ((show:any)=> {
-    if (categoryTab === 'anime') return true;
-
-    const dateStr = show.release_date || show.first_air_date;
-    if (!dateStr) return false;
-   const releaseDate = new Date(dateStr);
-  const bufferDate = new Date();
-  
-  // Set today's time to the very beginning of the day
-  bufferDate.setDate(bufferDate.getDate()-7);
-  bufferDate.setHours(0, 0, 0, 0);
-  releaseDate.setHours(0,0,0,0);
-
-  return releaseDate >= bufferDate;})
+  useEffect(() => {
+    dispatch(setSearchQuery(""));
+  }, [categoryTab]);
 
   return (
     <div>
-      {loading ? (
+      {loading || !isReady  ? (
         <div
           className=" overflow-x-hidden grid grid-cols-2 
         sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5
@@ -189,7 +224,7 @@ useEffect(()=>{
             />
           ))}
         </div>
-      ) : displayList.length > 0 ?(
+      ) : displayList.length > 0 ? (
         <div
           className=" overflow-x-hidden overflow-y-hidden grid grid-cols-2 
           sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5
@@ -207,7 +242,15 @@ useEffect(()=>{
               show.first_air_date ||
               show.aired?.string ||
               "TBA";
-
+// ADD THIS DEBUG
+  const bookmarkStatus = isBookmarked({ id: showId, type: categoryTab });
+  console.log('ShowCard debug:', {
+    showId,
+    showName,
+    categoryTab,
+    bookmarkStatus,
+    allBookmarks: bookmarks
+  });
             return (
               <ShowCard
                 key={`${showId} - ${index}`}
@@ -216,37 +259,40 @@ useEffect(()=>{
                 showReleaseDate={showReleaseDate}
                 showType={categoryTab}
                 showId={showId}
+                bookmarked={isBookmarked({ id: showId, type: categoryTab })}
+                onToggle={(pressed) => toggleBookmark({ id: showId, type: categoryTab }, pressed)}
               />
             );
           })}
         </div>
-      ): (<div className="flex flex-col items-center justify-center min-h-[400px] text-center px-4">
-    <div className="bg-zinc-900/50 p-6 rounded-full mb-4">
-      <Search className="h-10 w-10 text-zinc-600" />
-    </div>
-    <h3 className="text-xl font-semibold text-white">
-      No upcoming {categoryTab} found
-    </h3>
-    <p className="text-zinc-500 max-w-xs mt-2">
-      {searchQuery
-        ? `We couldn't find any future releases matching "${searchQuery}".`
-        : `There are currently no upcoming ${categoryTab} scheduled.`}
-    </p>
+      ) : (
+        <div className="flex flex-col items-center justify-center min-h-[400px] text-center px-4">
+          <div className="bg-zinc-900/50 p-6 rounded-full mb-4">
+            <Search className="h-10 w-10 text-zinc-600" />
+          </div>
+          <h3 className="text-xl font-semibold text-white">
+            No upcoming {categoryTab} found
+          </h3>
+          <p className="text-zinc-500 max-w-xs mt-2">
+            {searchQuery
+              ? `We couldn't find any future releases matching "${searchQuery}".`
+              : `There are currently no upcoming ${categoryTab} scheduled.`}
+          </p>
 
-    {searchQuery && (
-      <Button
-        variant="link"
-        className="mt-4 text-indigo-400 hover:text-indigo-300"
-        onClick={() => {
-
-        
-          dispatch(setPage(1))
-          dispatch(setSearchQuery(""))}}
-      >
-        Clear search and browse all
-      </Button>
-    )}
-  </div>)}
+          {searchQuery && (
+            <Button
+              variant="link"
+              className="mt-4 text-indigo-400 hover:text-indigo-300"
+              onClick={() => {
+                dispatch(setPage(1));
+                dispatch(setSearchQuery(""));
+              }}
+            >
+              Clear search and browse all
+            </Button>
+          )}
+        </div>
+      )}
 
       <Pagination className="my-10">
         <PaginationContent>
@@ -267,7 +313,7 @@ useEffect(()=>{
             if (lastPage <= 1) return null;
 
             const pages: (number | "ellipsis")[] = [];
-           
+
             // page 1
             pages.push(1);
 
@@ -276,7 +322,7 @@ useEffect(()=>{
               pages.push("ellipsis");
             }
 
-            //range around current page 
+            //range around current page
             const start = Math.max(2, page - 2);
             const end = Math.min(lastPage - 1, page + 2);
             for (let i = start; i <= end; i++) {

@@ -16,7 +16,7 @@ export default function cTabs() {
     <>
       <div className="px-3"> 
         <Tabs defaultValue="movies" className=" sm:hidden">
-          <TabsList className="w-full bg-zinc-900">
+          <TabsList className="w-full bg-zinc-800">
             {ctabs.map((tab, index) => (
               <TabsTrigger
                 key={index}

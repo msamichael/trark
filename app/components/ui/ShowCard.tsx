@@ -3,7 +3,6 @@ import Image from "next/image";
 import { CalendarDays,BookmarkIcon  } from "lucide-react";
 import Link from "next/link";
 import { Toggle } from "@/components/ui/toggle";
-import { useState } from "react";
 
 type ShowType = "anime" | "movies" | "series";
 
@@ -13,6 +12,8 @@ type ShowCardProps = {
   showName: string;
   showReleaseDate: string;
   showId: number;
+  bookmarked: boolean;
+  onToggle: (value:boolean)=> void;
 };
 
 export default function ShowCard({
@@ -21,17 +22,27 @@ export default function ShowCard({
   showName,
   showReleaseDate,
   showId,
+  bookmarked,
+  onToggle
 }: ShowCardProps) {
 
-const [bookmarked, setbookmarked] = useState(false);
 
   return (
     <div className="relative flex flex-col cursor-pointer group  w-[180px] sm:w-full ">
-      <div className="absolute top-0.5 right-0.5 z-10 ">
+      <div className="absolute top-0.5 right-0.5 z-10  drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]  bg-gradient-to-t from-black/10 via-black/30 to-transparent">
         <Toggle
           aria-label="bookmark"
           size={"sm"}
           variant={"outline"}
+          pressed={bookmarked}
+          onPressedChange={(pressed)=>{
+            onToggle(pressed);     
+        }
+        
+      }
+      onClick={(e) => {
+    e.stopPropagation();
+  }}
           className="cursor-pointer data-[state=on]:bg-transparent data-[state=on]:*:[svg]:fill-red-500 data-[state=on]:*:[svg]:stroke-red-500"
         >
           <BookmarkIcon />

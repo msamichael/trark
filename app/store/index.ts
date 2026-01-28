@@ -3,6 +3,7 @@ import searchReducer from "./searchSlice";
 import showReducer from "./showSlice";
 import categoryTabReducer from './categorySlice';
 import trailerReducer from './trailerSlice';
+import bookmarkReducer from './bookmarkSlice';
 
 export const store = configureStore({
   reducer: {
@@ -10,6 +11,7 @@ export const store = configureStore({
     show: showReducer,
     tab: categoryTabReducer,
     trailer: trailerReducer,
+    bookmark: bookmarkReducer,
 
   },
 });
