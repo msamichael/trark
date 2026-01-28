@@ -60,17 +60,8 @@ const hasRehydrated = useRehydrateBookmarks(!!user);
 
 useSyncBookmarksToLocalStorage(bookmarks,!!user, hasRehydrated);
 
- // ADD THIS: Don't render cards until bookmarks are loaded
+  // ADD THIS: Don't render cards until bookmarks are loaded
   const isReady = hasRehydrated;
-
-  
-// ADD THIS DEBUG
-console.log('🎬 ShowGrid render:', {
-  hasRehydrated,
-  bookmarksLength: bookmarks.length,
-  bookmarks: bookmarks,
-  isReady: hasRehydrated
-});
 
   // ... rest of your code stays the same ...
 
@@ -242,15 +233,6 @@ console.log('🎬 ShowGrid render:', {
               show.first_air_date ||
               show.aired?.string ||
               "TBA";
-// ADD THIS DEBUG
-  const bookmarkStatus = isBookmarked({ id: showId, type: categoryTab });
-  console.log('ShowCard debug:', {
-    showId,
-    showName,
-    categoryTab,
-    bookmarkStatus,
-    allBookmarks: bookmarks
-  });
             return (
               <ShowCard
                 key={`${showId} - ${index}`}

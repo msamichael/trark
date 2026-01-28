@@ -99,46 +99,45 @@ const trailerUrl = trailer
       >
         <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
 
-        <div className="relative flex flex-col md:flex-row gap-8 p-10 mt-10">
+        <div className="relative flex flex-col md:flex-row gap-6 p-6 sm:p-10 mt-5 sm:mt-10">
           {/* Movie Poster */}
-          <div className="flex-shrink-0 border-2 border-background/80 rounded h-[300px] w-[200px] sm:h-[400px] sm:w-[270px] overflow-hidden">
+          <div className="flex-shrink-0 border-2 border-background/80 rounded h-[300px] w-[200px] sm:h-[400px] sm:w-[270px] overflow-hidden mx-auto md:mx-0 relative">
             <Image
               src={movieData?.poster_path ? `https://image.tmdb.org/t/p/w500${movieData.poster_path}` : '/no-poster.png'}
-              width={270}
-              height={400}
+              fill
               priority
-              className="object-cover w-full h-full"
+              className="object-cover"
               alt={movieData?.title || "Movie Poster"}
             />
           </div>
 
-          <div className="flex flex-col gap-4">
-            <h1 className="text-4xl md:text-6xl font-bold text-white leading-tight">
+          <div className="flex flex-col gap-4 flex-1">
+            <h1 className="text-2xl sm:text-4xl md:text-6xl font-bold text-white leading-tight text-center md:text-left">
               {movieData?.title}
             </h1>
             
             <div className="flex flex-col gap-3">
               {/* RESTORED COUNTDOWN UI */}
-              <p className="flex items-center justify-start gap-2 rounded-full border border-indigo-500/60
-                bg-indigo-500/10 text-sm w-fit px-2 py-0.5 font-medium text-indigo-400">
+              <p className="flex items-center justify-center md:justify-start gap-2 rounded-full border border-indigo-500/60
+                bg-indigo-500/10 text-sm w-fit px-2 py-0.5 font-medium text-indigo-400 mx-auto md:mx-0">
                 <Clock className="h-[15px] w-[15px]"/>
                 {formatCountdown(movieData.release_date)}
               </p>
 
-              <div className="flex items-center gap-4 text-sm">
+              <div className="flex flex-wrap items-center justify-center md:justify-start gap-3 text-sm">
                 <p className="flex items-center gap-1 text-yellow-400">
                   <Star className="h-4 w-4 fill-yellow-400" />
                   {movieData?.vote_average?.toFixed(1)}
                 </p>
-                <Separator orientation="vertical" className="h-4 bg-zinc-700" />
+                <Separator orientation="vertical" className="h-4 bg-zinc-700 hidden sm:block" />
                 <p className="text-zinc-300">{movieData?.runtime} min</p>
-                <Separator orientation="vertical" className="h-4 bg-zinc-700" />
+                <Separator orientation="vertical" className="h-4 bg-zinc-700 hidden sm:block" />
                 <p className="text-zinc-300">{formatDate(movieData?.release_date)}</p>
               </div>
             </div>
 
             {/* Genres */}
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-2 justify-center md:justify-start">
               {movieData?.genres?.map((genre: any) => (
                 <p key={genre.id} className="rounded-full border border-zinc-700 bg-zinc-900/50 px-3 py-1 text-xs text-zinc-100">
                   {genre.name}
@@ -146,9 +145,9 @@ const trailerUrl = trailer
               ))}
             </div>
 
-            <p className="text-zinc-300 italic text-lg">{movieData?.tagline}</p>
+            <p className="text-zinc-300 italic text-lg text-center md:text-left">{movieData?.tagline}</p>
 
-            <div className="flex gap-3 mt-4">
+            <div className="flex gap-3 mt-4 justify-center md:justify-start">
               <TrailerButton />
               <Button className="bg-white text-black hover:bg-zinc-200 border-none font-semibold">
                 <Plus className="mr-2 h-5 w-5" /> Add to List
@@ -158,7 +157,7 @@ const trailerUrl = trailer
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-10 py-12 grid grid-cols-1 lg:grid-cols-4 gap-12">
+      <div className="max-w-7xl mx-auto px-6 sm:px-10 py-16 sm:py-24 grid grid-cols-1 lg:grid-cols-4 gap-8 sm:gap-12">
         {/* Sidebar Info */}
         <div className="space-y-6">
           <div>
@@ -188,9 +187,9 @@ const trailerUrl = trailer
 
           <section>
             <h2 className="text-2xl font-bold text-white mb-6">Top Cast</h2>
-            <div className="flex gap-6 overflow-x-auto pb-4 scrollbar-hide">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-6 md:flex md:flex-wrap md:gap-6 md:overflow-x-auto md:pb-4">
               {creditsData?.cast?.slice(0, 10).map((actor: any) => (
-                <div key={actor.id} className="flex-shrink-0 w-[100px] text-center space-y-2">
+                <div key={actor.id} className="flex-shrink-0 w-full sm:w-[100px] text-center space-y-2">
                   <div className="w-[90px] h-[90px] rounded-full overflow-hidden border-2 border-zinc-800 mx-auto">
                     <Image
                       src={actor.profile_path ? `https://image.tmdb.org/t/p/w185${actor.profile_path}` : '/no-poster.png'}
