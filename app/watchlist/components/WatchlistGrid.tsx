@@ -1,7 +1,7 @@
 "use client";
 
 import { Skeleton } from "@/components/ui/skeleton";
-import ShowCard from "@/app/components/ui/ShowCard";
+import WatchlistCard from "./WatchlistCard";
 import { Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
@@ -21,10 +21,26 @@ export default function WatchlistGrid({
 }: WatchlistGridProps) {
   if (loading) {
     return (
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
-        {[...Array(10)].map((_, i) => (
-          <Skeleton key={i} className="h-[300px]" />
-        ))}
+      <div className="space-y-8">
+        {/* Upcoming Section Skeleton */}
+        <div className="space-y-4">
+          <Skeleton className="h-6 w-32" />
+          <div className="space-y-3">
+            {[...Array(5)].map((_, i) => (
+              <Skeleton key={i} className="h-[140px] rounded-xl" />
+            ))}
+          </div>
+        </div>
+        
+        {/* All Shows Section Skeleton */}
+        <div className="space-y-4">
+          <Skeleton className="h-6 w-32" />
+          <div className="space-y-3">
+            {[...Array(5)].map((_, i) => (
+              <Skeleton key={i} className="h-[140px] rounded-xl" />
+            ))}
+          </div>
+        </div>
       </div>
     );
   }
@@ -50,39 +66,105 @@ export default function WatchlistGrid({
     );
   }
 
+  // Filter upcoming shows (with release dates in future)
+  const upcomingShows = watchlistData.filter((show) => {
+    if (!show.release_date && !show.first_air_date && !show.aired?.string) return false;
+    const releaseDateStr = show.release_date || show.first_air_date || show.aired?.string;
+    const releaseDate = new Date(releaseDateStr);
+    const now = new Date();
+    return releaseDate > now;
+  });
+
+  // Filter available shows (already released)
+  const availableShows = watchlistData.filter((show) => {
+    if (!show.release_date && !show.first_air_date && !show.aired?.string) return true;
+    const releaseDateStr = show.release_date || show.first_air_date || show.aired?.string;
+    const releaseDate = new Date(releaseDateStr);
+    const now = new Date();
+    return releaseDate <= now;
+  });
+
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
-      {watchlistData.map((show, index) => (
-        <ShowCard
-          key={`${show.type}-${show.id}-${index}`}
-          showId={show.id}
-          showType={show.type}
-          showName={show.title || show.name || "Untitled"}
-          showImage={
-            show.poster_path
-              ? show.type === "anime"
-                ? show.poster_path
-                : `https://image.tmdb.org/t/p/w500${show.poster_path}`
-              : "/no-poster.png"
-          }
-          showReleaseDate={
-            show.release_date || show.first_air_date || show.aired?.string || "TBA"
-          }
-          bookmarked={isBookmarked({
-            id: show.id,
-            type: show.type,
-          })}
-          onToggle={(pressed) => {
-            onToggleBookmark(
-              {
-                id: show.id,
-                type: show.type,
-              },
-              pressed
-            );
-          }}
-        />
-      ))}
+    <div className="space-y-12">
+      {/* Upcoming Shows Section */}
+      {upcomingShows.length > 0 && (
+        <div className="space-y-4">
+          <h2 className="text-xl font-semibold text-white">Upcoming</h2>
+          <div className="space-y-3">
+            {upcomingShows.map((show, index) => (
+              <WatchlistCard
+                key={`${show.type}-${show.id}-${index}`}
+                showId={show.id}
+                showType={show.type}
+                showName={show.title || show.name || "Untitled"}
+                showImage={
+                  show.poster_path
+                    ? show.type === "anime"
+                      ? show.poster_path
+                      : `https://image.tmdb.org/t/p/w500${show.poster_path}`
+                    : "/no-poster.png"
+                }
+                showReleaseDate={
+                  show.release_date || show.first_air_date || show.aired?.string || "TBA"
+                }
+                bookmarked={isBookmarked({
+                  id: show.id,
+                  type: show.type,
+                })}
+                onToggle={(pressed) => {
+                  onToggleBookmark(
+                    {
+                      id: show.id,
+                      type: show.type,
+                    },
+                    pressed
+                  );
+                }}
+              />
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Available Shows Section */}
+      {availableShows.length > 0 && (
+        <div className="space-y-4">
+          <h2 className="text-xl font-semibold text-white">Available</h2>
+          <div className="space-y-3">
+            {availableShows.map((show, index) => (
+              <WatchlistCard
+                key={`${show.type}-${show.id}-${index}`}
+                showId={show.id}
+                showType={show.type}
+                showName={show.title || show.name || "Untitled"}
+                showImage={
+                  show.poster_path
+                    ? show.type === "anime"
+                      ? show.poster_path
+                      : `https://image.tmdb.org/t/p/w500${show.poster_path}`
+                    : "/no-poster.png"
+                }
+                showReleaseDate={
+                  show.release_date || show.first_air_date || show.aired?.string || "TBA"
+                }
+                bookmarked={isBookmarked({
+                  id: show.id,
+                  type: show.type,
+                })}
+                onToggle={(pressed) => {
+                  onToggleBookmark(
+                    {
+                      id: show.id,
+                      type: show.type,
+                    },
+                    pressed
+                  );
+                }}
+              />
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
