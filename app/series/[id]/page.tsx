@@ -88,7 +88,7 @@ const trailerUrl = trailer
 
       {/* Backdrop image using TMDB 'backdrop_path' */}
       <div
-        className="relative w-full h-[500px] overflow-hidden"
+        className="relative w-full h-fit overflow-hidden"
         style={{
           backgroundImage: `url(https://image.tmdb.org/t/p/original${tvData?.backdrop_path})`,
           backgroundSize: "cover",
@@ -97,9 +97,9 @@ const trailerUrl = trailer
           maskImage: "linear-gradient(to bottom, black 90%, transparent 100%)",
         }}
       >
-        <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/70 to-transparent backdrop-blur-sm" />
 
-        <div className="relative flex flex-col md:flex-row gap-6 p-6 sm:p-10 mt-5 sm:mt-10">
+        <div className="relative flex flex-col md:flex-row gap-6 p-6 sm:p-10 mt-5 sm:mt-10 mb-4">
           {/* TV Show Poster */}
           <div className="flex-shrink-0 border-2 border-background/80 rounded h-[300px] w-[200px] sm:h-[400px] sm:w-[270px] overflow-hidden mx-auto md:mx-0 relative">
             <Image
@@ -117,7 +117,7 @@ const trailerUrl = trailer
             </h1>
             
             <div className="flex flex-col gap-3">
-              {/* RESTORED COUNTDOWN UI */}
+              {/* countdown */}
               <p className="flex items-center justify-center md:justify-start gap-2 rounded-full border border-indigo-500/60
                 bg-indigo-500/10 text-sm w-fit px-2 py-0.5 font-medium text-indigo-400 mx-auto md:mx-0">
                 <Clock className="h-[15px] w-[15px]"/>
@@ -146,11 +146,11 @@ const trailerUrl = trailer
             </div>
 
             <p className="text-zinc-300 italic text-lg text-center md:text-left">{tvData?.tagline}</p>
-
+              {/* Button */}
             <div className="flex gap-3 mt-4 justify-center md:justify-start">
               <TrailerButton />
-              <Button className="bg-white text-black hover:bg-zinc-200 border-none font-semibold">
-                <Plus className="mr-2 h-5 w-5" /> Add to List
+              <Button className="bg-white text-black hover:bg-zinc-200 hover:cursor-pointer border-none font-semibold">
+                <Plus className="h-5 w-5" /> Add to WatchList
               </Button>
             </div>
           </div>

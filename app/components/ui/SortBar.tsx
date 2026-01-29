@@ -29,12 +29,12 @@ export default function SortBar() {
       value={selectSortValue}
       onValueChange={handleSortChange}
     >
-      <SelectTrigger className="w-28 md:w-38 flex items-start gap-1">
-        <ArrowUpNarrowWide className="text-zinc-100" />
+      <SelectTrigger className="w-28 md:w-38 flex items-start gap-1 bg-zinc-900/50 border-zinc-700 text-white">
+        <ArrowUpNarrowWide className="text-zinc-400" />
         <SelectValue placeholder="Sort by" />
       </SelectTrigger>
 
-      <SelectContent className="bg-zinc-100">
+      <SelectContent className="bg-zinc-900 border-zinc-700 text-white">
         <SelectItem value="popularity">Popularity</SelectItem>
         <SelectItem value="title">Title</SelectItem>
         <SelectItem value="start_date">Release Date</SelectItem>

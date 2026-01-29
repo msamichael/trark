@@ -164,7 +164,7 @@ export default function WatchlistPage() {
   }
 
   return (
-    <div className="p-8">
+    <div className="py-8 px-6">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="flex flex-col sm:flex-row justify-between items-center mb-8 gap-4">
@@ -175,18 +175,7 @@ export default function WatchlistPage() {
             </p>
           </div>
           
-          {bookmarks.length > 0 && (
-            <Button
-              variant="destructive"
-              size="sm"
-              onClick={handleClearAll}
-              disabled={clearing}
-              className="flex items-center gap-2"
-            >
-              <Trash2 className="w-4 h-4" />
-              {clearing ? "Clearing..." : "Clear All"}
-            </Button>
-          )}
+          
         </div>
 
         {/* Search and Sort Controls */}
@@ -196,18 +185,29 @@ export default function WatchlistPage() {
             <Input
               type="text"
               placeholder="Search watchlist..."
-              className="pl-10 bg-zinc-900/50 border-zinc-700 text-white placeholder-zinc-500"
+              className="pl-10 bg-zinc-900/50 border-zinc-700 text-white placeholder-zinc-500 focus:border-zinc-600 focus:ring-zinc-500/50"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
           </div>
-          
-          <div className="flex justify-end">
+          <div className="flex justify-between">
+          {bookmarks.length > 0 && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleClearAll}
+              disabled={clearing}
+              className="flex items-center gap-2 border-red-500/50 text-red-400 hover:bg-red-500/20 hover:text-red-300 hover:cursor-pointer"
+            >
+              <Trash2 className="w-4 h-4" />
+              {clearing ? "Clearing..." : "Clear All"}
+            </Button>
+          )}
             <Select value={sortBy} onValueChange={setSortBy}>
               <SelectTrigger className="w-[180px] bg-zinc-900/50 border-zinc-700 text-white">
                 <SelectValue placeholder="Sort by" />
               </SelectTrigger>
-              <SelectContent className="bg-zinc-900 border-zinc-700">
+              <SelectContent className="bg-zinc-900 border-zinc-700 text-white">
                 <SelectItem value="title">Title (A-Z)</SelectItem>
                 <SelectItem value="date">Release Date</SelectItem>
               </SelectContent>

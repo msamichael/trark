@@ -76,7 +76,7 @@ export default function WatchlistGrid({
       {upcomingShows.length > 0 && (
         <div className="space-y-4">
           <h2 className="text-xl font-semibold text-white">Upcoming</h2>
-          <div className="space-y-3">
+          <div className="space-y-3 flex flex-wrap gap-4">
             {upcomingShows.map((show, index) => (
               <WatchlistCard
                 key={`${show.type}-${show.id}-${index}`}

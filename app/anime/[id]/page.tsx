@@ -7,20 +7,20 @@ import TrailerModal from "@/app/components/layout/TrailerModal";
 import { Separator } from "@/components/ui/separator";
 
 type AnimePageProps = {
-  params: { id: Promise<{ id: string }> };
+  params:  Promise<{ id: string }> ;
 };
 
 export default async function AnimePage({ params }: AnimePageProps) {
   const { id } = await params;
 
-  const res = await fetch(`https://api.jikan.moe/v4/anime/${id}`);
 
-  const castResponse = await fetch(
-    `https://api.jikan.moe/v4/anime/${id}/characters`
-  );
+  const [animeRes, castRes] = await Promise.all([
+    fetch(`https://api.jikan.moe/v4/anime/${id}`),
+fetch(`https://api.jikan.moe/v4/anime/${id}/characters`)
+  ]);
 
-  const result = await res.json();
-  const castResult = await castResponse.json();
+  const result = await animeRes.json();
+  const castResult = await castRes.json();
   const castData = castResult.data;
   const animeData = result.data;
   const trailerUrl = animeData?.trailer?.embed_url;
@@ -85,7 +85,7 @@ export default async function AnimePage({ params }: AnimePageProps) {
 
       {/* Backdrop image */}
       <div
-        className="relative w-full h-[500px] overflow-hidden"
+        className="relative w-full h-fit overflow-hidden"
         style={{
           backgroundImage: `url(${animeData?.images?.webp?.large_image_url})`,
           backgroundSize: "cover",
@@ -94,10 +94,10 @@ export default async function AnimePage({ params }: AnimePageProps) {
           maskImage: "linear-gradient(to bottom, black 90%, transparent 100%)",
         }}
       >
-        <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
-
-        <div className="relative flex flex-col md:flex-row gap-6 p-6 sm:p-10 mt-5 sm:mt-10">
-          {/* Show Image */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/70 to-transparent backdrop-blur-sm" />
+          {/* Hero Section Layout */}
+        <div className="relative flex flex-col md:flex-row gap-6 p-6 sm:p-10 mt-5 sm:mt-10 mb-4">
+          {/* Anime Poster */}
           <div className="flex-shrink-0 border-2 border-background/80 rounded h-[300px] w-[200px] sm:h-[400px] sm:w-[270px] overflow-hidden mx-auto md:mx-0 relative">
             <Image
               src={animeData?.images?.webp?.large_image_url}
@@ -148,14 +148,14 @@ export default async function AnimePage({ params }: AnimePageProps) {
             {/* Buttons */}
             <div className="flex gap-3 mt-4 justify-center md:justify-start">
               <TrailerButton />
-              <Button className="bg-white text-black hover:bg-zinc-200 border-none font-semibold">
-                <Plus className="mr-2 h-5 w-5" /> Add to List
+              <Button className="bg-white text-black hover:bg-zinc-200 hover:cursor-pointer border-none font-semibold ">
+                <Plus className="h-5 w-5" /> Add to WatchList
               </Button>
             </div>
           </div>
         </div>
       </div>
-
+        {/* Content Section */}
       <div className="max-w-7xl mx-auto px-6 sm:px-10 py-16 sm:py-24 grid grid-cols-1 lg:grid-cols-4 gap-8 sm:gap-12">
         {/* Sidebar Info */}
         <div className="space-y-6">

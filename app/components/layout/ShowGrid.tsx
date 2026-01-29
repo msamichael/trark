@@ -211,7 +211,7 @@ useSyncBookmarksToLocalStorage(bookmarks,!!user, hasRehydrated);
           {Array.from({ length: 20 }).map((_, i) => (
             <Skeleton
               key={i}
-              className="h-[170px] sm:h-[300px] w-[130px] sm:w-full"
+              className=" h-[240px] sm:h-[300px] w-[180px] sm:w-[230px] sm:w-full"
             />
           ))}
         </div>
