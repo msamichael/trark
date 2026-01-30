@@ -18,8 +18,12 @@ export function useBookmarkActions() {
 
   function toggleBookmark(item: BookmarkedShow, pressed: boolean) {
     if (pressed) {
+      console.log('dispatching addBookmark', item)
       dispatch(addBookmark(item));
+       console.log('Dispatched addBookmark');
+      
     } else {
+      console.log('Removing the show')
       dispatch(removeBookmark(item));
     }
   }

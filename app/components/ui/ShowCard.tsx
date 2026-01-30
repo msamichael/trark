@@ -32,7 +32,7 @@ export default function ShowCard({
       <div className="absolute top-0.5 right-0.5 z-10 drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)] bg-gradient-to-t from-black/20 via-black/40 to-transparent">
         <Toggle
           aria-label="bookmark"
-          size={"sm"}
+          size={"lg"}
           variant={"outline"}
           pressed={bookmarked}
           onPressedChange={(pressed) => {
@@ -46,6 +46,8 @@ export default function ShowCard({
           <BookmarkIcon />
         </Toggle>
       </div>
+
+      {/* Show Poster */}
       <Link href={`/${showType}/${showId}`} className="block">
         <div className="relative">
           {showImage ? (
@@ -64,16 +66,16 @@ export default function ShowCard({
               width={230}
               height={300}
               className="object-cover rounded-lg 
-      h-[170px] sm:h-[300px] w-[130px] sm:w-[230px]"
+      h-[240px] sm:h-[300px] w-[180px] sm:w-[230px]"
               alt={`${showName} poster`}
             />
           )}
 
           <div
             className="flex gap-1.5 items-center absolute bottom-3 left-2 
-            bg-black/85 text-white text-sm px-2 py-1.5 rounded-lg opacity-0 
-            translate-y-2 transition-all duration-300 
-            group-hover:opacity-100 group-hover:translate-y-0 backdrop-blur-sm"
+            bg-black/85 text-white text-sm px-2 py-1.5 rounded-lg md:opacity-0 
+            md:translate-y-2 md:transition-all duration-300 
+            md:group-hover:opacity-100 md:group-hover:translate-y-0 backdrop-blur-sm"
           >
             <CalendarDays size={16} />
             <p className="font-medium">

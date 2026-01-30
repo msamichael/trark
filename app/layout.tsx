@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import localFont from "next/font/local";
 import "./globals.css";
 import ReduxProvider from './store/ReduxProvider';
+import BookmarkProvider from './components/BookmarkProvider';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -58,8 +59,10 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} ${clashGrotesk.variable} ${aeonik.variable}  ${plusJakarta.variable} antialiased`}
       >
         <ReduxProvider>
-        {children}
-          </ReduxProvider>
+          <BookmarkProvider>
+            {children}
+          </BookmarkProvider>
+        </ReduxProvider>
       </body>
     </html>
   );

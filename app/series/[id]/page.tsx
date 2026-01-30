@@ -1,10 +1,14 @@
 import Image from "next/image";
+import { useBookmarkActions } from "@/app/hooks/useBookmarkActions";
+import clsx from "clsx";
 import { Button } from "@/components/ui/button";
-import { Clock, Plus, Star } from "lucide-react";
+import { Check, Clock, Plus, Star } from "lucide-react";
 
 import TrailerButton from "./../../components/ui/TrailerButton";
 import TrailerModal from "@/app/components/layout/TrailerModal";
 import { Separator } from "@/components/ui/separator";
+import { BookmarkedShow } from "@/app/store/bookmarkSlice";
+import BookmarkButton from "@/app/components/ui/BookmarkButton";
 
 type SeriesPageProps = {
   params: Promise<{ id: string }>;
@@ -12,6 +16,7 @@ type SeriesPageProps = {
 
 export default async function SeriesPage({ params }: SeriesPageProps) {
   const { id } = await params;
+
 
   const API_OPTIONS = {
     method: 'GET',
@@ -30,6 +35,13 @@ export default async function SeriesPage({ params }: SeriesPageProps) {
   const tvData = await tvRes.json();
   const creditsData = await creditsRes.json();
   const videoData = await videoRes.json();
+
+  const show:BookmarkedShow = {
+    id: tvData.id as number,
+    type: "series",  
+  };
+
+  
 
 
   if (!tvData || tvData.success === false) {
@@ -149,10 +161,8 @@ const trailerUrl = trailer
               {/* Button */}
             <div className="flex gap-3 mt-4 justify-center md:justify-start">
               <TrailerButton />
-              <Button className="bg-white text-black hover:bg-zinc-200 hover:cursor-pointer border-none font-semibold">
-                <Plus className="h-5 w-5" /> Add to WatchList
-              </Button>
-            </div>
+              <BookmarkButton show={show}/>
+             </div>
           </div>
         </div>
       </div>

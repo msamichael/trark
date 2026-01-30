@@ -4,18 +4,18 @@ import { useEffect, useState, useRef } from 'react';
 import { loadLocalBookmarks } from '../lib/bookmarkStorage';
 import { setBookmarks } from '../store/bookmarkSlice';
 
-export function useRehydrateBookmarks(isLoggedIn: boolean){
+export function useLoadBookmarksFromStorage(isLoggedIn: boolean){
     const dispatch = useDispatch();
-    const [hasRehydrated, setHasRehydrated] = useState(false);
+    const [hasLoaded, setHasLoaded] = useState(false);
     const hasLoadedRef = useRef(false);
 
-    console.log('🎯 useRehydrateBookmarks CALLED', { isLoggedIn, hasLoadedRef: hasLoadedRef.current });
+    console.log('🎯 useLoadBookmarksFromStorage CALLED', { isLoggedIn, hasLoadedRef: hasLoadedRef.current });
 
     useEffect(() => {
-        console.log('🔍 useRehydrateBookmarks effect triggered', { 
+        console.log('🔍 useLoadBookmarksFromStorage effect triggered', { 
             isLoggedIn,
             hasLoadedRef: hasLoadedRef.current,
-            hasRehydrated
+            hasLoaded
         });
 
         // Only run once
@@ -28,7 +28,7 @@ export function useRehydrateBookmarks(isLoggedIn: boolean){
         
         if (isLoggedIn) {
             console.log('✅ User logged in, skipping localStorage load');
-            setHasRehydrated(true);
+            setHasLoaded(true);
             return;
         }
         
@@ -43,10 +43,10 @@ export function useRehydrateBookmarks(isLoggedIn: boolean){
             console.log('⚠️ No bookmarks found in localStorage');
         }
         
-        setHasRehydrated(true);
-        console.log('✅ setHasRehydrated(true) called');
+        setHasLoaded(true);
+        console.log('✅ setHasLoaded(true) called');
     }, [isLoggedIn, dispatch]);
 
-    console.log('🔄 useRehydrateBookmarks returning:', hasRehydrated);
-    return hasRehydrated;
+    console.log('🔄 useLoadBookmarksFromStorage returning:', hasLoaded);
+    return hasLoaded;
 }

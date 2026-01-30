@@ -20,8 +20,6 @@ import { Button } from "@/components/ui/button";
 import { setSearchQuery } from "@/app/store/searchSlice";
 import { Search } from "lucide-react";
 import { useBookmarkActions } from "@/app/hooks/useBookmarkActions";
-import { useSyncBookmarksToLocalStorage } from "@/app/hooks/useSyncBookmarksToLocalStorage";
-import { useRehydrateBookmarks } from "@/app/hooks/useRehydrateBookmarks";
 
 const TMDB_API_ACCESS_TOKEN = process.env.NEXT_PUBLIC_TMDB_API_ACCESS_TOKEN;
 
@@ -53,15 +51,6 @@ export default function ShowGrid() {
   const categoryTab = useSelector((state: RootState) => state.tab.categoryTab);
 
 const { isBookmarked, toggleBookmark } = useBookmarkActions();
-
-const user = false;
-
-const hasRehydrated = useRehydrateBookmarks(!!user);
-
-useSyncBookmarksToLocalStorage(bookmarks,!!user, hasRehydrated);
-
-  // ADD THIS: Don't render cards until bookmarks are loaded
-  const isReady = hasRehydrated;
 
   // ... rest of your code stays the same ...
 
@@ -201,7 +190,7 @@ useSyncBookmarksToLocalStorage(bookmarks,!!user, hasRehydrated);
 
   return (
     <div>
-      {loading || !isReady  ? (
+      {loading ? (
         <div
           className=" overflow-x-hidden grid grid-cols-2 
         sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5

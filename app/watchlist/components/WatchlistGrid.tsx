@@ -54,8 +54,9 @@ export default function WatchlistGrid({
 
   // Filter upcoming shows (with release dates in future)
   const upcomingShows = watchlistData.filter((show) => {
-    if (!show.release_date && !show.first_air_date && !show.aired?.string) return false;
-    const releaseDateStr = show.release_date || show.first_air_date || show.aired?.string;
+    const releaseDateStr = show.release_date || show.first_air_date;
+    // If no date or "TBA", don't include in upcoming
+    if (!releaseDateStr || releaseDateStr === "TBA") return false;
     const releaseDate = new Date(releaseDateStr);
     const now = new Date();
     return releaseDate > now;
@@ -63,11 +64,20 @@ export default function WatchlistGrid({
 
   // Filter available shows (already released)
   const availableShows = watchlistData.filter((show) => {
-    if (!show.release_date && !show.first_air_date && !show.aired?.string) return true;
-    const releaseDateStr = show.release_date || show.first_air_date || show.aired?.string;
+    const releaseDateStr = show.release_date || show.first_air_date;
+    // If no date or "TBA", don't include in available
+    if (!releaseDateStr || releaseDateStr === "TBA") return false;
     const releaseDate = new Date(releaseDateStr);
     const now = new Date();
     return releaseDate <= now;
+  });
+
+  // Filter unknown shows (no date or "TBA")
+  const unknownShows = watchlistData.filter((show) => {
+    const releaseDateStr = show.release_date || show.first_air_date;
+    // If no date or "TBA", include in unknown
+    if (!releaseDateStr || releaseDateStr === "TBA") return true;
+    return false;
   });
 
   return (
@@ -116,7 +126,7 @@ export default function WatchlistGrid({
       {availableShows.length > 0 && (
         <div className="space-y-4">
           <h2 className="text-xl font-semibold text-white">Available</h2>
-          <div className="space-y-3">
+          <div className="space-y-3 flex flex-wrap gap-4">
             {availableShows.map((show, index) => (
               <WatchlistCard
                 key={`${show.type}-${show.id}-${index}`}
@@ -133,6 +143,44 @@ export default function WatchlistGrid({
                 showReleaseDate={
                   show.release_date || show.first_air_date || show.aired?.string || "TBA"
                 }
+                bookmarked={isBookmarked({
+                  id: show.id,
+                  type: show.type,
+                })}
+                onToggle={(pressed) => {
+                  onToggleBookmark(
+                    {
+                      id: show.id,
+                      type: show.type,
+                    },
+                    pressed
+                  );
+                }}
+              />
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Unknown Shows Section */}
+      {unknownShows.length > 0 && (
+        <div className="space-y-4">
+          <h2 className="text-xl font-semibold text-white">Unknown Release Date</h2>
+          <div className="space-y-3 flex flex-wrap gap-4">
+            {unknownShows.map((show, index) => (
+              <WatchlistCard
+                key={`${show.type}-${show.id}-${index}`}
+                showId={show.id}
+                showType={show.type}
+                showName={show.title || show.name || "Untitled"}
+                showImage={
+                  show.poster_path
+                    ? show.type === "anime"
+                      ? show.poster_path
+                      : `https://image.tmdb.org/t/p/w500${show.poster_path}`
+                    : "/no-poster.png"
+                }
+                showReleaseDate="Unknown"
                 bookmarked={isBookmarked({
                   id: show.id,
                   type: show.type,

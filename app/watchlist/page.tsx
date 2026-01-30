@@ -1,17 +1,16 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store";
 import { useBookmarkActions } from "../hooks/useBookmarkActions";
-import { useRehydrateBookmarks } from "../hooks/useRehydrateBookmarks";
-import { useSyncBookmarksToLocalStorage } from "../hooks/useSyncBookmarksToLocalStorage";
 import WatchlistGrid from "./components/WatchlistGrid";
 import { Button } from "@/components/ui/button";
-import { Trash2, Search } from "lucide-react";
+import { Trash2, Search, X } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+
 
 const TMDB_API_ACCESS_TOKEN = process.env.NEXT_PUBLIC_TMDB_API_ACCESS_TOKEN;
 
@@ -33,21 +32,18 @@ export default function WatchlistPage() {
   const [clearing, setClearing] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState("title");
-  
-  const user = false;
-  const hasRehydrated = useRehydrateBookmarks(!!user);
-  useSyncBookmarksToLocalStorage(bookmarks, !!user, hasRehydrated);
 
   useEffect(() => {
-    if (hasRehydrated) {
-      fetchWatchlistData();
-    }
-  }, [hasRehydrated, bookmarks]);
+    fetchWatchlistData();
+  }, [bookmarks]);
 
   const fetchWatchlistData = async () => {
+    console.log('Bookmarks:', bookmarks);
+
     if (bookmarks.length === 0) {
       setLoading(false);
       setWatchlistData([]);
+
       return;
     }
 
@@ -57,17 +53,28 @@ export default function WatchlistPage() {
       const promises = bookmarks.map(async (bookmark) => {
         try {
           if (bookmark.type === "anime") {
+            console.log('Fetching anime:', bookmark.id);
             const res = await fetch(`https://api.jikan.moe/v4/anime/${bookmark.id}`);
+            console.log('Response status:', res.status);
             const data = await res.json();
-            
+            console.log('Response data:', data);
+            console.log('Returning anime data:',  {
+    id: bookmark.id,
+    type: "anime",
+    title: data.data?.title || "Unknown",
+    name: data.data?.title || "Unknown",
+    poster_path: data.data?.images?.webp?.large_image_url,
+    release_date: data.data?.aired?.from || "TBA",
+    first_air_date: data.data?.aired?.from || "TBA",
+  });
             return {
               id: bookmark.id,
               type: "anime",
               title: data.data?.title || "Unknown",
               name: data.data?.title || "Unknown",
               poster_path: data.data?.images?.webp?.large_image_url,
-              release_date: data.data?.aired?.string || "TBA",
-              first_air_date: data.data?.aired?.string || "TBA",
+              release_date: data.data?.aired?.from || "TBA",
+              first_air_date: data.data?.aired?.from || "TBA",
             };
           } else {
             const endpoint = bookmark.type === "movies" ? "movie" : "tv";
@@ -102,7 +109,10 @@ export default function WatchlistPage() {
       });
 
       const results = await Promise.all(promises);
+      console.log('All results:', results);
+
       setWatchlistData(results);
+       console.log('Watchlist data after fetch:', watchlistData)
     } catch (error) {
       console.error("Error fetching watchlist data:", error);
       setWatchlistData([]);
@@ -139,15 +149,18 @@ export default function WatchlistPage() {
         const nameB = (b.title || b.name || "").toLowerCase();
         return nameA.localeCompare(nameB);
       case "date":
-        const dateA = a.release_date || a.first_air_date || a.aired?.string || "";
-        const dateB = b.release_date || b.first_air_date || b.aired?.string || "";
+        const dateA = a.release_date || a.first_air_date;
+        const dateB = b.release_date || b.first_air_date;
+        if (!dateA && !dateB) return 0;
+        if (!dateA) return 1;  // Put shows without dates at the end
+        if (!dateB) return -1; 
         return new Date(dateA).getTime() - new Date(dateB).getTime();
       default:
         return 0;
     }
   });
 
-  if (!hasRehydrated) {
+  if (loading) {
     return (
       <div className="p-8">
         <div className="space-y-4 max-w-4xl mx-auto">
@@ -189,6 +202,16 @@ export default function WatchlistPage() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
+            {/* 2. The Clear Button - Only shows if there is text */}
+      {searchQuery && (
+        <button
+          onClick={() => setSearchQuery("")}
+          className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-500 
+                     hover:text-zinc-300 transition-colors cursor-pointer"
+        >
+          <X className="h-4 w-4" />
+        </button>
+      )}
           </div>
           <div className="flex justify-between">
           {bookmarks.length > 0 && (

@@ -68,8 +68,33 @@ export default function WatchlistCard({
 
   return (
     <div className="relative w-full sm:w-[350px] bg-gradient-to-br from-purple-900/10 to-blue-900/10 rounded-2xl overflow-hidden border border-purple-500/20 group hover:shadow-2xl hover:border-purple-500/40 transition-all duration-300">
+       {/* Bookmark Toggle */}
+        <div className=" absolute right-2 top-1/2 -translate-y-1/2 z-10 ">
+          <Toggle
+            aria-label="bookmark"
+            size={"lg"}
+            variant={"outline"}
+            pressed={bookmarked}
+            onPressedChange={(pressed) => {
+              onToggle(pressed);
+            }
+            
+          }
+           onClick={(e) => {
+          e.stopPropagation();
+          console.log('hi')
+        }}
+            className="cursor-pointer data-[state=on]:bg-transparent data-[state=on]:*:[svg]:fill-white data-[state=on]:*:[svg]:stroke-white"
+          >
+            <BookmarkIcon  />
+          </Toggle>
+        </div>
       {/* Card content */}
-      <div className="relative flex items-center gap-4 p-4">
+    <Link href={`/${showType}/${showId}` } className="pr-14" >
+      <div className="relative flex justify-between items-center p-4">
+        <div className="flex items-center gap-4">
+
+        
         {/* Poster */}
         <div className="relative flex-shrink-0">
           <div className="w-[80px] h-[120px] rounded-lg overflow-hidden border border-purple-500/30 shadow-lg group-hover:shadow-xl transition-all duration-300">
@@ -84,7 +109,7 @@ export default function WatchlistCard({
         </div>
 
         {/* Show Details */}
-         <Link href={`/${showType}/${showId}`} className="block">
+         
         <div className="flex-1 min-w-0">
             <h3 className="text-sm font-semibold text-white mb-1 line-clamp-1 group-hover:text-purple-400 transition-colors">
               {showName}
@@ -100,23 +125,11 @@ export default function WatchlistCard({
             <span className="font-medium">{calculateCountdown(showReleaseDate)}</span>
           </div>
         </div>
-</Link>
-        {/* Bookmark Toggle */}
-        <div className="flex-shrink-100">
-          <Toggle
-            aria-label="bookmark"
-            size={"sm"}
-            variant={"outline"}
-            pressed={bookmarked}
-            onPressedChange={(pressed) => {
-              onToggle(pressed);
-            }}
-            className="cursor-pointer data-[state=on]:bg-transparent data-[state=on]:*:[svg]:fill-white data-[state=on]:*:[svg]:stroke-white"
-          >
-            <BookmarkIcon size={18} />
-          </Toggle>
-        </div>
+
+</div>
+       
       </div>
+    </Link>
     </div>
   );
 }
