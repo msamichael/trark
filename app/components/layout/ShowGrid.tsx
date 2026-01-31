@@ -178,10 +178,7 @@ const { isBookmarked, toggleBookmark } = useBookmarkActions();
   // Reset page to 1 whenever the search query OR the category tab changes
   useEffect(() => {
     dispatch(setPage(1));
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
+    
   }, [searchQuery, categoryTab, dispatch]);
 
   useEffect(() => {

@@ -155,7 +155,7 @@ export default async function SeriesPage({ params }: SeriesPageProps) {
                 {tvData?.vote_average?.toFixed(1) > 0.0 ? (
                   <p className="flex items-center gap-1 text-yellow-400">
                     <Star className="h-4 w-4 fill-yellow-400" />
-                    tvData?.vote_average?.toFixed(1)
+                    {tvData?.vote_average?.toFixed(1)}
                   </p>
                 ) : null}
                 <Separator

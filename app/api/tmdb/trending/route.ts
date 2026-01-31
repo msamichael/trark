@@ -16,7 +16,7 @@ export async function GET(request: NextRequest) {
     const [moviesRes, tvRes, animeRes] = await Promise.all([
       fetch(`https://api.themoviedb.org/3/discover/movie?language=en-US&page=1&primary_release_date.gte=${today}&sort_by=popularity.desc`, API_OPTIONS),
       fetch(`https://api.themoviedb.org/3/discover/tv?language=en-US&page=1&first_air_date.gte=${today}&sort_by=popularity.desc`, API_OPTIONS),
-      fetch('https://api.jikan.moe/v4/anime?status=upcoming&filter=upcoming&limit=10')
+      fetch('https://api.jikan.moe/v4/seasons/upcoming?limit=25')
     ]);
 
     const moviesData = await moviesRes.json();

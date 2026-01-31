@@ -55,7 +55,7 @@ export default function HeroCarousel() {
     if (items.length > 0) {
       const interval = setInterval(() => {
         setCurrentIndex((prev) => (prev + 1) % items.length);
-      }, 7000); // 7 seconds per slide
+      }, 5800); // 5.8 seconds per slide
 
       return () => clearInterval(interval);
     }
@@ -99,7 +99,7 @@ export default function HeroCarousel() {
           // Original hero section
           <div className="absolute inset-0 z-0">
             {/* Vibrant multi-color gradient background */}
-            <div className="absolute inset-0 bg-gradient-to-br from-purple-600/80 via-blue-500/60 to-pink-500/40 animate-pulse [animation-duration:8s]"></div>
+            <div className="absolute inset-0 bg-gradient-to-br from-purple-600/80 via-blue-500/60 to-pink-500/40 animate-pulse [animation-duration:4s]"></div>
             <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent"></div>
           </div>
         ) : currentItem.type === 'anime' ? (

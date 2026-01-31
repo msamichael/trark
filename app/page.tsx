@@ -5,12 +5,11 @@ import SortBar from "./components/ui/SortBar";
 import CategoryTab from "./components/ui/CategoryTab";
 import ShowGrid from './components/layout/ShowGrid';
 import HeroCarousel from './components/layout/HeroCarousel';
+import MostAnticipatedSection from './components/layout/MostAnticipatedSection';
 import Link from "next/link";
 import { BookmarkIcon } from "lucide-react";
 
-export default async function Home() {
-
-
+export default function Home() {
   return (
     <div className="p-2.5 scroll-smooth">
       <div className="flex justify-between items-center mb-4">
@@ -44,6 +43,9 @@ export default async function Home() {
             </div>
             <SortBar />
           </div>
+
+          {/* Most Anticipated Section */}
+          <MostAnticipatedSection />
 
           {/* Category Section */}
           <CategoryTab />
