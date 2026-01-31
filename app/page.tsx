@@ -4,6 +4,7 @@ import SearchBar from "./components/ui/SearchBar";
 import SortBar from "./components/ui/SortBar";
 import CategoryTab from "./components/ui/CategoryTab";
 import ShowGrid from './components/layout/ShowGrid';
+import HeroCarousel from './components/layout/HeroCarousel';
 import Link from "next/link";
 import { BookmarkIcon } from "lucide-react";
 
@@ -30,29 +31,8 @@ export default async function Home() {
         </Link>
       </div>
       <main>
-        {/* Hero Section */}
-        <header className="relative overflow-hidden max-w-300 mx-auto mt-5 rounded-3xl border border-purple-500/20 bg-gradient-to-br from-purple-900/20 to-blue-900/10 group mb-4">
-          <div className="absolute inset-0 z-0">
-            <div className="bg-gradient-radial-top-right from-purple-500/40 via-blue-500/20 to-transparent opacity-50 w-full h-full animate-pulse"></div>
-            <div className="absolute inset-0 bg-linear-to-t from-black/70 to-transparent"></div>
-          </div>
-
-          <div className="relative z-10 flex flex-col justify-between items-center p-8 md:p-12 min-h-50">
-            <span className="inline-flex items-center self-start sm:self-center gap-1.5 rounded-full border border-purple-500/30 bg-purple-500/10 px-3 py-1 text-xs font-medium text-purple-300 backdrop-blur-sm">
-              <span className="relative flex h-1.5 w-1.5">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-purple-500"></span>
-              </span>
-              Track Your Favorites
-            </span>
-            <h2 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-white to-purple-200 bg-clip-text text-transparent">
-              Never Miss an Upcoming Release
-            </h2>
-            <p className="text-zinc-300 text-center max-w-2xl">
-              Stay updated with all the shows you're excited about and never miss a premiere
-            </p>
-          </div>
-        </header>
+        {/* Hero Carousel */}
+        <HeroCarousel />
 
         {/* Show Section*/}
         <section className="max-w-300 mx-auto w-full mt-13 ">

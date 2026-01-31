@@ -58,9 +58,6 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-       {/* <head>
-        <link rel="icon" href="/trark-logo.png" type="image/png" sizes="32x32" />
-      </head> */}
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${clashGrotesk.variable} ${aeonik.variable}  ${plusJakarta.variable} antialiased`}
       >

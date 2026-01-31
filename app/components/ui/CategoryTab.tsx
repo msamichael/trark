@@ -21,7 +21,7 @@ export default function cTabs() {
               <TabsTrigger
                 key={index}
                 value={tab}
-                className="capitalize transition-all duration-400 ease-out data-[state=active]:bg-[#7c3fa2] data-[state=active]:text-white"
+                className="capitalize transition-all duration-400 ease-out data-[state=active]:bg-purple-500 data-[state=active]:text-white"
                 onClick={() => dispatch(setTab(tab))}
               >
                 {tab}
