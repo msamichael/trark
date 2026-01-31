@@ -46,6 +46,9 @@ export const plusJakarta = localFont({
 export const metadata: Metadata = {
   title: "Trark",
   description: "Never miss your favorite upcoming shows",
+  icons: {
+    icon: "/icon.png",
+  },
 };
 
 export default function RootLayout({
@@ -55,6 +58,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+       {/* <head>
+        <link rel="icon" href="/trark-logo.png" type="image/png" sizes="32x32" />
+      </head> */}
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${clashGrotesk.variable} ${aeonik.variable}  ${plusJakarta.variable} antialiased`}
       >

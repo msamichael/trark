@@ -1,7 +1,7 @@
 "use client";
 
 import { Skeleton } from "@/components/ui/skeleton";
-import WatchlistCard from "./WatchlistCard";
+import WatchlistCard from "../ui/WatchlistCard";
 import { Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";

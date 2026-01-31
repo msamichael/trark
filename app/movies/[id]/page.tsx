@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { Clock, Plus, Star } from "lucide-react";
+import { CalendarDays, Clock, Plus, Star, Timer } from "lucide-react";
 
 import TrailerButton from "./../../components/ui/TrailerButton";
 import TrailerModal from "@/app/components/layout/TrailerModal";
@@ -132,14 +132,31 @@ const trailerUrl = trailer
               </p>
 
               <div className="flex flex-wrap items-center justify-center md:justify-start gap-3 text-sm">
-                <p className="flex items-center gap-1 text-yellow-400">
-                  <Star className="h-4 w-4 fill-yellow-400" />
-                  {movieData?.vote_average?.toFixed(1)}
-                </p>
+                
+                {movieData?.vote_average?.toFixed(1) > 0.0 ? (
+                  <p className="flex items-center gap-1 text-yellow-400">
+                    <Star className="h-4 w-4 fill-yellow-400" />
+                    movieData?.vote_average?.toFixed(1)
+                  </p>
+                ) : null}
                 <Separator orientation="vertical" className="h-4 bg-zinc-700 hidden sm:block" />
-                <p className="text-zinc-300">{movieData?.runtime} min</p>
-                <Separator orientation="vertical" className="h-4 bg-zinc-700 hidden sm:block" />
-                <p className="text-zinc-300">{formatDate(movieData?.release_date)}</p>
+
+                <div className="flex gap-1">
+                  <Timer size={18} />
+                  <p className="text-zinc-300">
+                    {movieData?.runtime?.[0] || "TBA"} min
+                  </p>
+                </div>
+                <Separator
+                  orientation="vertical"
+                  className="h-4 bg-zinc-700 hidden sm:block"
+                />
+                <div className="flex gap-1">
+                  <CalendarDays size={18} />
+                  <p className="text-zinc-300">
+                    {formatDate(movieData?.release_date)}
+                  </p>
+                </div>
               </div>
             </div>
 

@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { Clock, Plus, Star } from "lucide-react";
+import { CalendarDays, Clock, Plus, Star } from "lucide-react";
 
 import TrailerButton from "./../../components/ui/TrailerButton";
 import TrailerModal from "@/app/components/layout/TrailerModal";
@@ -127,18 +127,19 @@ fetch(`https://api.jikan.moe/v4/anime/${id}/characters`)
                 <Clock className="h-[15px] w-[15px]"/>
                 {formatCountdown(animeData.aired.from)}
               </p>
+               <div className="flex items-center gap-2 text-sm text-zinc-400 mb-2 justify-center md:justify-start">
+            <CalendarDays size={17} />
+    
+              <p className="text-zinc-300">{formatDate(animeData.aired.from)}</p>
 
-              <div className="flex flex-wrap items-center justify-center md:justify-start gap-3 text-sm">
-                <p className="flex items-center gap-1 text-yellow-400">
-                  <Star className="h-4 w-4 fill-yellow-400" />
-                  {animeData?.score?.toFixed(1)}
-                </p>
-                <Separator orientation="vertical" className="h-4 bg-zinc-700 hidden sm:block" />
-                <p className="text-zinc-300">{animeData?.duration}</p>
-                <Separator orientation="vertical" className="h-4 bg-zinc-700 hidden sm:block" />
-                <p className="text-zinc-300">{formatDate(animeData.aired.from)}</p>
               </div>
-            </div>
+               {/* Broadcast time */}
+
+            <p className="text-sm text-zinc-300 mx-auto md:mx-0">
+              Broadcast: {animeData?.broadcast?.string}
+            </p>
+
+              </div>
 
             {/* Genre */}
             <div className="flex flex-wrap gap-2 justify-center md:justify-start">

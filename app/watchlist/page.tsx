@@ -4,12 +4,13 @@ import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store";
 import { useBookmarkActions } from "../hooks/useBookmarkActions";
-import WatchlistGrid from "./components/WatchlistGrid";
+import WatchlistGrid from "../components/layout/WatchlistGrid";
 import { Button } from "@/components/ui/button";
 import { Trash2, Search, X } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import ConfirmModal from "../components/ui/ConfirmModal";
 
 
 const TMDB_API_ACCESS_TOKEN = process.env.NEXT_PUBLIC_TMDB_API_ACCESS_TOKEN;
@@ -121,16 +122,25 @@ export default function WatchlistPage() {
     }
   };
 
+  const [confirmModalOpen, setConfirmModalOpen] = useState(false);
+
   const handleClearAll = () => {
-    if (window.confirm("Are you sure you want to clear your entire watchlist?")) {
-      setClearing(true);
-      bookmarks.forEach((bookmark) => {
-        toggleBookmark(bookmark, false);
-      });
-      setTimeout(() => {
-        setClearing(false);
-      }, 500);
-    }
+    setConfirmModalOpen(true);
+  };
+
+  const handleConfirmClear = () => {
+    setClearing(true);
+    bookmarks.forEach((bookmark) => {
+      toggleBookmark(bookmark, false);
+    });
+    setTimeout(() => {
+      setClearing(false);
+    }, 500);
+    setConfirmModalOpen(false);
+  };
+
+  const handleCancelClear = () => {
+    setConfirmModalOpen(false);
   };
 
   // Filter and sort watchlist data
@@ -244,6 +254,19 @@ export default function WatchlistPage() {
           loading={loading}
           onToggleBookmark={toggleBookmark}
           isBookmarked={isBookmarked}
+        />
+
+        {/* Confirmation Modal */}
+        <ConfirmModal
+          open={confirmModalOpen}
+          onOpenChange={setConfirmModalOpen}
+          onConfirm={handleConfirmClear}
+          onCancel={handleCancelClear}
+          title="Clear Watchlist"
+          description="Are you sure you want to clear your entire watchlist? This action cannot be undone."
+          confirmText="Clear Watchlist"
+          cancelText="Cancel"
+          itemCount={bookmarks.length}
         />
       </div>
     </div>

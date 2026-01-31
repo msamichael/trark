@@ -1,8 +1,12 @@
 import Image from "next/image";
-import { useBookmarkActions } from "@/app/hooks/useBookmarkActions";
-import clsx from "clsx";
-import { Button } from "@/components/ui/button";
-import { Check, Clock, Plus, Star } from "lucide-react";
+import {
+  Clock,
+  Star,
+  Hourglass,
+  TimerIcon,
+  Timer,
+  CalendarDays,
+} from "lucide-react";
 
 import TrailerButton from "./../../components/ui/TrailerButton";
 import TrailerModal from "@/app/components/layout/TrailerModal";
@@ -17,32 +21,34 @@ type SeriesPageProps = {
 export default async function SeriesPage({ params }: SeriesPageProps) {
   const { id } = await params;
 
-
   const API_OPTIONS = {
-    method: 'GET',
+    method: "GET",
     headers: {
-      accept: 'application/json',
-      Authorization: `Bearer ${process.env.TMDB_API_ACCESS_TOKEN}`
-    }
+      accept: "application/json",
+      Authorization: `Bearer ${process.env.TMDB_API_ACCESS_TOKEN}`,
+    },
   };
 
   const [tvRes, creditsRes, videoRes] = await Promise.all([
     fetch(`https://api.themoviedb.org/3/tv/${id}?language=en-US`, API_OPTIONS),
-    fetch(`https://api.themoviedb.org/3/tv/${id}/credits?language=en-US`, API_OPTIONS),
-    fetch(`https://api.themoviedb.org/3/tv/${id}/videos?language=en-US`, API_OPTIONS)
+    fetch(
+      `https://api.themoviedb.org/3/tv/${id}/credits?language=en-US`,
+      API_OPTIONS,
+    ),
+    fetch(
+      `https://api.themoviedb.org/3/tv/${id}/videos?language=en-US`,
+      API_OPTIONS,
+    ),
   ]);
 
   const tvData = await tvRes.json();
   const creditsData = await creditsRes.json();
   const videoData = await videoRes.json();
 
-  const show:BookmarkedShow = {
+  const show: BookmarkedShow = {
     id: tvData.id as number,
-    type: "series",  
+    type: "series",
   };
-
-  
-
 
   if (!tvData || tvData.success === false) {
     return (
@@ -57,13 +63,15 @@ export default async function SeriesPage({ params }: SeriesPageProps) {
   }
 
   const trailer = videoData.results?.find(
-    (vid: any) => vid.site === "YouTube"  && (vid.type === "Trailer" || vid.type === "Teaser")
+    (vid: any) =>
+      vid.site === "YouTube" &&
+      (vid.type === "Trailer" || vid.type === "Teaser"),
   );
   const hasNoTrailer = !trailer;
-  
-const trailerUrl = trailer 
-  ? `https://www.youtube.com/embed/${trailer.key}?autoplay=1` 
-  : undefined;
+
+  const trailerUrl = trailer
+    ? `https://www.youtube.com/embed/${trailer.key}?autoplay=1`
+    : undefined;
 
   const formatDate = (dateString: string) => {
     if (!dateString) return "TBA";
@@ -105,7 +113,8 @@ const trailerUrl = trailer
           backgroundImage: `url(https://image.tmdb.org/t/p/original${tvData?.backdrop_path})`,
           backgroundSize: "cover",
           backgroundPosition: "center top",
-          WebkitMaskImage: "linear-gradient(to bottom, black 90%, transparent 100%)",
+          WebkitMaskImage:
+            "linear-gradient(to bottom, black 90%, transparent 100%)",
           maskImage: "linear-gradient(to bottom, black 90%, transparent 100%)",
         }}
       >
@@ -115,7 +124,11 @@ const trailerUrl = trailer
           {/* TV Show Poster */}
           <div className="flex-shrink-0 border-2 border-background/80 rounded h-[300px] w-[200px] sm:h-[400px] sm:w-[270px] overflow-hidden mx-auto md:mx-0 relative">
             <Image
-              src={tvData?.poster_path ? `https://image.tmdb.org/t/p/w500${tvData.poster_path}` : '/no-poster.png'}
+              src={
+                tvData?.poster_path
+                  ? `https://image.tmdb.org/t/p/w500${tvData.poster_path}`
+                  : "/no-poster.png"
+              }
               fill
               priority
               className="object-cover"
@@ -127,42 +140,67 @@ const trailerUrl = trailer
             <h1 className="text-2xl sm:text-4xl md:text-6xl font-bold text-white leading-tight text-center md:text-left">
               {tvData?.name}
             </h1>
-            
+
             <div className="flex flex-col gap-3">
               {/* countdown */}
-              <p className="flex items-center justify-center md:justify-start gap-2 rounded-full border border-indigo-500/60
-                bg-indigo-500/10 text-sm w-fit px-2 py-0.5 font-medium text-indigo-400 mx-auto md:mx-0">
-                <Clock className="h-[15px] w-[15px]"/>
+              <p
+                className="flex items-center justify-center md:justify-start gap-2 rounded-full border border-indigo-500/60
+                bg-indigo-500/10 text-sm w-fit px-2 py-0.5 font-medium text-indigo-400 mx-auto md:mx-0"
+              >
+                <Clock className="h-[15px] w-[15px]" />
                 {formatCountdown(tvData.first_air_date)}
               </p>
 
               <div className="flex flex-wrap items-center justify-center md:justify-start gap-3 text-sm">
-                <p className="flex items-center gap-1 text-yellow-400">
-                  <Star className="h-4 w-4 fill-yellow-400" />
-                  {tvData?.vote_average?.toFixed(1)}
-                </p>
-                <Separator orientation="vertical" className="h-4 bg-zinc-700 hidden sm:block" />
-                <p className="text-zinc-300">{tvData?.episode_run_time?.[0] || 'TBA'} min</p>
-                <Separator orientation="vertical" className="h-4 bg-zinc-700 hidden sm:block" />
-                <p className="text-zinc-300">{formatDate(tvData?.first_air_date)}</p>
+                {tvData?.vote_average?.toFixed(1) > 0.0 ? (
+                  <p className="flex items-center gap-1 text-yellow-400">
+                    <Star className="h-4 w-4 fill-yellow-400" />
+                    tvData?.vote_average?.toFixed(1)
+                  </p>
+                ) : null}
+                <Separator
+                  orientation="vertical"
+                  className="h-4 bg-zinc-700 hidden sm:block"
+                />
+                <div className="flex gap-1">
+                  <Timer size={18} />
+                  <p className="text-zinc-300">
+                    {tvData?.episode_run_time?.[0] || "TBA"} min
+                  </p>
+                </div>
+                <Separator
+                  orientation="vertical"
+                  className="h-4 bg-zinc-700 hidden sm:block"
+                />
+                <div className="flex gap-1">
+                  <CalendarDays size={18} />
+                  <p className="text-zinc-300">
+                    {formatDate(tvData?.first_air_date)}
+                  </p>
+                </div>
               </div>
             </div>
 
             {/* Genres */}
             <div className="flex flex-wrap gap-2 justify-center md:justify-start">
               {tvData?.genres?.map((genre: any) => (
-                <p key={genre.id} className="rounded-full border border-zinc-700 bg-zinc-900/50 px-3 py-1 text-xs text-zinc-100">
+                <p
+                  key={genre.id}
+                  className="rounded-full border border-zinc-700 bg-zinc-900/50 px-3 py-1 text-xs text-zinc-100"
+                >
                   {genre.name}
                 </p>
               ))}
             </div>
 
-            <p className="text-zinc-300 italic text-lg text-center md:text-left">{tvData?.tagline}</p>
-              {/* Button */}
+            <p className="text-zinc-300 italic text-lg text-center md:text-left">
+              {tvData?.tagline}
+            </p>
+            {/* Button */}
             <div className="flex gap-3 mt-4 justify-center md:justify-start">
               <TrailerButton />
-              <BookmarkButton show={show}/>
-             </div>
+              <BookmarkButton show={show} />
+            </div>
           </div>
         </div>
       </div>
@@ -180,18 +218,24 @@ const trailerUrl = trailer
           </div>
           <div>
             <h3 className="text-white font-semibold mb-1">Episodes</h3>
-            <p className="text-zinc-400 text-sm">{tvData?.number_of_episodes}</p>
+            <p className="text-zinc-400 text-sm">
+              {tvData?.number_of_episodes}
+            </p>
           </div>
           <div>
             <h3 className="text-white font-semibold mb-1">Network</h3>
             {tvData?.networks?.map((network: any) => (
-              <p key={network.id} className="text-zinc-400 text-sm">{network.name}</p>
+              <p key={network.id} className="text-zinc-400 text-sm">
+                {network.name}
+              </p>
             ))}
           </div>
           <div>
             <h3 className="text-white font-semibold mb-1">Production</h3>
             {tvData?.production_companies?.map((co: any) => (
-              <p key={co.id} className="text-zinc-400 text-sm">{co.name}</p>
+              <p key={co.id} className="text-zinc-400 text-sm">
+                {co.name}
+              </p>
             ))}
           </div>
         </div>
@@ -200,25 +244,38 @@ const trailerUrl = trailer
         <div className="lg:col-span-3 space-y-10">
           <section>
             <h2 className="text-2xl font-bold text-white mb-4">Synopsis</h2>
-            <p className="text-zinc-400 leading-relaxed text-lg">{tvData?.overview}</p>
+            <p className="text-zinc-400 leading-relaxed text-lg">
+              {tvData?.overview}
+            </p>
           </section>
 
           <section>
             <h2 className="text-2xl font-bold text-white mb-6">Top Cast</h2>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-6 md:flex md:flex-wrap md:gap-6 md:overflow-x-auto md:pb-4">
               {creditsData?.cast?.slice(0, 10).map((actor: any) => (
-                <div key={actor.id} className="flex-shrink-0 w-full sm:w-[100px] text-center space-y-2">
+                <div
+                  key={actor.id}
+                  className="flex-shrink-0 w-full sm:w-[100px] text-center space-y-2"
+                >
                   <div className="w-[90px] h-[90px] rounded-full overflow-hidden border-2 border-zinc-800 mx-auto">
                     <Image
-                      src={actor.profile_path ? `https://image.tmdb.org/t/p/w185${actor.profile_path}` : '/no-poster.png'}
+                      src={
+                        actor.profile_path
+                          ? `https://image.tmdb.org/t/p/w185${actor.profile_path}`
+                          : "/no-poster.png"
+                      }
                       alt={actor.name}
                       width={90}
                       height={90}
                       className="object-cover w-full h-full"
                     />
                   </div>
-                  <p className="text-sm font-medium text-white line-clamp-1">{actor.name}</p>
-                  <p className="text-xs text-zinc-500 line-clamp-2">{actor.character}</p>
+                  <p className="text-sm font-medium text-white line-clamp-1">
+                    {actor.name}
+                  </p>
+                  <p className="text-xs text-zinc-500 line-clamp-2">
+                    {actor.character}
+                  </p>
                 </div>
               ))}
             </div>

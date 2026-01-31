@@ -13,7 +13,14 @@ export default async function Home() {
   return (
     <div className="p-2.5 scroll-smooth">
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-2xl ml-4 mt-2 font-bold">Trark</h2>
+        <div className="flex items-center gap-3 ml-4 mt-2 pl-2 md:pl-6">
+          <img 
+            src="/icon.png" 
+            alt="Trark Logo" 
+            className="h-6 w-6 object-contain"
+          />
+          <h2 className="text-2xl font-bold">Trark</h2>
+        </div>
         <Link 
           href="/watchlist"
           className="mr-4 flex items-center gap-2 bg-zinc-900/50 hover:bg-zinc-900/80 px-4 py-2 rounded-lg border border-zinc-800 transition-all duration-300 hover:border-zinc-700"
