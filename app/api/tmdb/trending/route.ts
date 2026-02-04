@@ -60,11 +60,15 @@ export async function GET(request: NextRequest) {
       if (animeWithType[i]) upcoming.push(animeWithType[i]);
     }
 
-    return NextResponse.json(upcoming);
+    return NextResponse.json(upcoming, {
+      headers: {
+        'Cache-Control': 'public, s-maxage=3600, stale-while-revalidate=86400'
+      }
+    });
   } catch (error) {
     console.error('Trending API Error:', error);
     return NextResponse.json(
-      { error: 'Failed to fetch trending data' },
+      { error: 'Failed to fetch trending data', details: process.env.NODE_ENV === 'development' ? (error as Error).message : undefined },
       { status: 500 }
     );
   }

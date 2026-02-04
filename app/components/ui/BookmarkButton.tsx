@@ -26,8 +26,7 @@ return(<Button
               className={clsx("hover:cursor-pointer border-none font-semibold", !bookmarked?"bg-white text-black hover:bg-zinc-200 ":"bg-green-600 text-white hover:bg-green-700")}
               onClick={
                 ()=> {toggleBookmark(show, !bookmarked)
-                    console.log(`hi from series page${show}`)
-                }
+                 }
               }
               >
                {

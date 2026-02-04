@@ -21,18 +21,6 @@ import { setSearchQuery } from "@/app/store/searchSlice";
 import { Search } from "lucide-react";
 import { useBookmarkActions } from "@/app/hooks/useBookmarkActions";
 
-const TMDB_API_ACCESS_TOKEN = process.env.NEXT_PUBLIC_TMDB_API_ACCESS_TOKEN;
-
-const TMDB_BASE_URL = "https://api.themoviedb.org/3";
-
-const API_OPTIONS = {
-  method: "GET",
-  headers: {
-    accept: "application/json",
-    Authorization: `Bearer ${TMDB_API_ACCESS_TOKEN}`,
-  },
-};
-
 export default function ShowGrid() {
   const dispatch = useDispatch();
 
@@ -72,7 +60,6 @@ const { isBookmarked, toggleBookmark } = useBookmarkActions();
 
   
 
-
   function handlePageChange(newPage: number) {
     if (newPage >= 1 && newPage <= lastPage) {
       dispatch(setPage(newPage));
@@ -82,38 +69,20 @@ const { isBookmarked, toggleBookmark } = useBookmarkActions();
   const fetchTMDB = async (type: "movie" | "tv", query?: string) => {
     setLoading(true);
 
-    const baseUrl = query
-      ? `${TMDB_BASE_URL}/search/${type}`
-      : `${TMDB_BASE_URL}/discover/${type}`;
     const params = new URLSearchParams({
+      type,
       page: page.toString(),
       language: "en-US",
     });
 
     if (query) {
       params.append("query", query);
-    } else {
-      const isMovie = categoryTab === "movies";
-      const today = new Date().toISOString().split("T")[0];
-
-      const dateKey = isMovie
-        ? "primary_release_date.gte"
-        : "first_air_date.gte";
-      params.append(dateKey, today);
-      const sortValue =
-        orderBy === "title"
-          ? isMovie
-            ? "original_title.asc"
-            : "name.asc"
-          : orderBy === "start_date"
-          ? isMovie
-            ? "primary_release_date.asc"
-            : "first_air_date.asc"
-          : "popularity.desc";
-      params.append("sort_by", sortValue);
+    } else if (orderBy) {
+      params.append("orderBy", orderBy);
     }
+
     try {
-      const res = await fetch(`${baseUrl}?${params.toString()}`, API_OPTIONS);
+      const res = await fetch(`/api/tmdb/discover?${params.toString()}`);
       const data = await res.json();
       dispatch(setShowList(data?.results || []));
 
@@ -130,22 +99,18 @@ const { isBookmarked, toggleBookmark } = useBookmarkActions();
   const fetchAnime = async (query = "" as string) => {
     setLoading(true);
 
-    const baseUrl = "https://api.jikan.moe/v4/anime";
-
     const params = new URLSearchParams({
-      status: "upcoming",
-      filter: "upcoming",
-      order_by: orderBy,
-      sort: "asc",
       page: page.toString(),
+      orderBy: orderBy,
+      sort: "asc",
     });
 
     if (query) {
-      params.append("q", query);
+      params.append("query", query);
     }
 
     try {
-      const res = await fetch(`${baseUrl}?${params.toString()}`);
+      const res = await fetch(`/api/jikan/anime?${params.toString()}`);
       const data = await res.json();
       dispatch(setShowList(data?.data || []));
 

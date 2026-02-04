@@ -1,6 +1,7 @@
 "use client";
+
 import Image from "next/image";
-import { CalendarDays,BookmarkIcon  } from "lucide-react";
+import { CalendarDays, BookmarkIcon } from "lucide-react";
 import Link from "next/link";
 import { Toggle } from "@/components/ui/toggle";
 
@@ -13,7 +14,7 @@ type ShowCardProps = {
   showReleaseDate: string;
   showId: number;
   bookmarked: boolean;
-  onToggle: (value:boolean)=> void;
+  onToggle: (value: boolean) => void;
 };
 
 export default function ShowCard({
@@ -23,31 +24,27 @@ export default function ShowCard({
   showReleaseDate,
   showId,
   bookmarked,
-  onToggle
+  onToggle,
 }: ShowCardProps) {
-
 
   return (
     <div className="relative flex flex-col cursor-pointer group w-[180px] sm:w-full">
+      {/* Bookmark toggle with drop shadow */}
       <div className="absolute top-0.5 right-0.5 z-10 drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)] bg-gradient-to-t from-black/20 via-black/40 to-transparent">
         <Toggle
           aria-label="bookmark"
-          size={"lg"}
-          variant={"outline"}
+          size="lg"
+          variant="outline"
           pressed={bookmarked}
-          onPressedChange={(pressed) => {
-            onToggle(pressed);     
-        }}
-        onClick={(e) => {
-          e.stopPropagation();
-        }}
+          onPressedChange={(pressed) => onToggle(pressed)}
+          onClick={(e) => e.stopPropagation()}
           className="cursor-pointer data-[state=on]:bg-transparent data-[state=on]:*:[svg]:fill-white data-[state=on]:*:[svg]:stroke-white"
         >
           <BookmarkIcon />
         </Toggle>
       </div>
 
-      {/* Show Poster */}
+      {/* Show poster with link */}
       <Link href={`/${showType}/${showId}`} className="block">
         <div className="relative">
           {showImage ? (
@@ -71,6 +68,7 @@ export default function ShowCard({
             />
           )}
 
+          {/* Date badge with backdrop blur */}
           <div
             className="flex gap-1.5 items-center absolute bottom-3 left-2 
             bg-black/85 text-white text-sm px-2 py-1.5 rounded-lg md:opacity-0 

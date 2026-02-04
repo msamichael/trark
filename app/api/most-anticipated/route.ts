@@ -12,6 +12,7 @@ export async function GET(request: NextRequest) {
       }
     };
 
+    // Calculate date range for filtering (past 5 days)
     const today = new Date();
     const fiveDaysAgo = new Date(today);
     fiveDaysAgo.setDate(today.getDate() - 5);
@@ -75,11 +76,15 @@ export async function GET(request: NextRequest) {
       movies: filteredMovies,
       tv: filteredTV,
       anime: filteredAnime
+    }, {
+      headers: {
+        'Cache-Control': 'public, s-maxage=3600, stale-while-revalidate=86400'
+      }
     });
   } catch (error) {
-    console.error(' API Error:', error);
+    console.error('Most Anticipated API Error:', error);
     return NextResponse.json(
-      { error: 'Failed to fetch most anticipated data', movies: [], tv: [], anime: [] },
+      { error: 'Failed to fetch most anticipated data', details: process.env.NODE_ENV === 'development' ? (error as Error).message : undefined, movies: [], tv: [], anime: [] },
       { status: 500 }
     );
   }

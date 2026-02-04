@@ -29,17 +29,20 @@ interface MostAnticipatedData {
 }
 
 export default function MostAnticipatedSection() {
+  // Get current category from Redux store
   const categoryTab = useSelector((state: RootState) => state.tab.categoryTab);
   const [data, setData] = useState<Show[]>([]);
   const [loading, setLoading] = useState(true);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
+  // Fetch data when category changes
   useEffect(() => {
     async function fetchData() {
       try {
         const res = await fetch('/api/most-anticipated');
         const result: MostAnticipatedData = await res.json();
         
+        // Select shows based on current category
         let shows: Show[] = [];
         switch (categoryTab) {
           case 'movies':
@@ -63,6 +66,7 @@ export default function MostAnticipatedSection() {
     fetchData();
   }, [categoryTab]);
 
+  // Handle horizontal scroll
   const scroll = (direction: 'left' | 'right') => {
     if (scrollContainerRef.current) {
       const scrollAmount = 400;
@@ -73,11 +77,13 @@ export default function MostAnticipatedSection() {
     }
   };
 
+  // Helper functions
   const getShowName = (show: Show) => show.title || show.name || 'Unknown';
   const getAnticipationScore = (show: Show) => {
-    return show.members || show.popularity ||  0;
+    return show.members || show.popularity || 0;
   };
 
+  // Loading state
   if (loading) {
     return (
       <div className="w-full mb-8">
@@ -94,13 +100,14 @@ export default function MostAnticipatedSection() {
     );
   }
 
+  // Don't render if no data
   if (data.length === 0) {
     return null;
   }
 
   return (
     <div className="w-full mb-8 relative group">
-      {/* Header */}
+      {/* Header with show count */}
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
           <Flame className="text-orange-500" size={20} />
@@ -110,7 +117,7 @@ export default function MostAnticipatedSection() {
           </span>
         </div>
         
-        {/* Navigation Buttons */}
+        {/* Navigation buttons - show on hover */}
         <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
           <button
             onClick={() => scroll('left')}
@@ -129,7 +136,7 @@ export default function MostAnticipatedSection() {
         </div>
       </div>
 
-      {/* Horizontal Scroll Container */}
+      {/* Horizontal scroll container */}
       <div
         ref={scrollContainerRef}
         className="flex gap-4 overflow-x-auto scrollbar-hide scroll-smooth pb-4"
@@ -142,14 +149,14 @@ export default function MostAnticipatedSection() {
             className="flex-shrink-0 group/card"
           >
             <div className="relative w-[140px]">
-              {/* Rank Badge */}
+              {/* Rank badge with gradient */}
               <div className="absolute -top-2 -left-2 z-20">
                 <div className="w-8 h-8 rounded-full bg-gradient-to-br from-orange-500 to-red-600 flex items-center justify-center shadow-lg">
                   <span className="text-xs font-bold text-white">{index + 1}</span>
                 </div>
               </div>
 
-              {/* Poster */}
+              {/* Poster with hover effects */}
               <div className="relative rounded-xl overflow-hidden shadow-lg transition-all duration-300 group-hover/card:scale-105 group-hover/card:shadow-2xl">
                 {show.poster_path ? (
                   <Image
@@ -165,10 +172,10 @@ export default function MostAnticipatedSection() {
                   </div>
                 )}
 
-                {/* Gradient Overlay */}
+                {/* Gradient overlay on hover */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover/card:opacity-100 transition-opacity duration-300" />
 
-                {/* Anticipation Score Badge */}
+                {/* Anticipation score badge */}
                 <div className="absolute bottom-2 left-2 right-2 flex items-center justify-between">
                   <div className="flex items-center gap-1 bg-black/70 backdrop-blur-sm px-2 py-1 rounded-lg">
                     <TrendingUp size={12} className="text-orange-400" />
@@ -179,7 +186,7 @@ export default function MostAnticipatedSection() {
                 </div>
               </div>
 
-              {/* Title */}
+              {/* Show title */}
               <p className="mt-2 text-xs font-medium text-zinc-300 line-clamp-2 group-hover/card:text-white transition-colors">
                 {getShowName(show)}
               </p>
@@ -188,7 +195,7 @@ export default function MostAnticipatedSection() {
         ))}
       </div>
 
-      {/* Fade Effect */}
+      {/* Fade effect on right side */}
       <div className="absolute inset-y-0 right-0 w-16 bg-gradient-to-l from-zinc-950 to-transparent pointer-events-none" />
     </div>
   );

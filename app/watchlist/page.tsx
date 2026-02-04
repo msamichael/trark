@@ -39,8 +39,7 @@ export default function WatchlistPage() {
   }, [bookmarks]);
 
   const fetchWatchlistData = async () => {
-    console.log('Bookmarks:', bookmarks);
-
+  
     if (bookmarks.length === 0) {
       setLoading(false);
       setWatchlistData([]);
@@ -54,21 +53,9 @@ export default function WatchlistPage() {
       const promises = bookmarks.map(async (bookmark) => {
         try {
           if (bookmark.type === "anime") {
-            console.log('Fetching anime:', bookmark.id);
             const res = await fetch(`https://api.jikan.moe/v4/anime/${bookmark.id}`);
-            console.log('Response status:', res.status);
             const data = await res.json();
-            console.log('Response data:', data);
-            console.log('Returning anime data:',  {
-    id: bookmark.id,
-    type: "anime",
-    title: data.data?.title || "Unknown",
-    name: data.data?.title || "Unknown",
-    poster_path: data.data?.images?.webp?.large_image_url,
-    release_date: data.data?.aired?.from || "TBA",
-    first_air_date: data.data?.aired?.from || "TBA",
-  });
-            return {
+               return {
               id: bookmark.id,
               type: "anime",
               title: data.data?.title || "Unknown",
@@ -110,10 +97,8 @@ export default function WatchlistPage() {
       });
 
       const results = await Promise.all(promises);
-      console.log('All results:', results);
-
+   
       setWatchlistData(results);
-       console.log('Watchlist data after fetch:', watchlistData)
     } catch (error) {
       console.error("Error fetching watchlist data:", error);
       setWatchlistData([]);

@@ -9,8 +9,7 @@ export function useLoadBookmarksFromStorage(isLoggedIn: boolean){
     const [hasLoaded, setHasLoaded] = useState(false);
     const hasLoadedRef = useRef(false);
 
-    console.log('🎯 useLoadBookmarksFromStorage CALLED', { isLoggedIn, hasLoadedRef: hasLoadedRef.current });
-
+ 
     useEffect(() => {
         console.log('🔍 useLoadBookmarksFromStorage effect triggered', { 
             isLoggedIn,

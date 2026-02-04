@@ -15,23 +15,11 @@ type MoviePageProps = {
 export default async function MoviePage({ params }: MoviePageProps) {
   const { id } = await params;
 
-  const API_OPTIONS = {
-    method: 'GET',
-    headers: {
-      accept: 'application/json',
-      Authorization: `Bearer ${process.env.TMDB_API_ACCESS_TOKEN}`
-    }
-  };
-
-  const [movieRes, creditsRes, videoRes] = await Promise.all([
-    fetch(`https://api.themoviedb.org/3/movie/${id}?language=en-US`, API_OPTIONS),
-    fetch(`https://api.themoviedb.org/3/movie/${id}/credits?language=en-US`, API_OPTIONS),
-    fetch(`https://api.themoviedb.org/3/movie/${id}/videos?language=en-US`, API_OPTIONS)
-  ]);
-
-  const movieData = await movieRes.json();
-  const creditsData = await creditsRes.json();
-  const videoData = await videoRes.json();
+  const res = await fetch(`/api/tmdb/movie/${id}`);
+  const data = await res.json();
+  const movieData = data.movie;
+  const creditsData = data.credits;
+  const videoData = data.videos;
 
   const show: BookmarkedShow = {
     id: movieData.id as number,
@@ -43,7 +31,7 @@ export default async function MoviePage({ params }: MoviePageProps) {
     return (
       <div className="h-screen flex flex-col items-center justify-center text-white bg-black">
         <h1 className="text-2xl font-bold">Data Fetching Failed</h1>
-        <p className="text-zinc-400">Status Code: {movieRes.status}</p>
+        <p className="text-zinc-400">Status Code: {res.status}</p>
         <pre className="mt-4 p-4 bg-zinc-900 rounded text-xs">
           {JSON.stringify(movieData, null, 2)}
         </pre>

@@ -15,16 +15,10 @@ type AnimePageProps = {
 export default async function AnimePage({ params }: AnimePageProps) {
   const { id } = await params;
 
-
-  const [animeRes, castRes] = await Promise.all([
-    fetch(`https://api.jikan.moe/v4/anime/${id}`),
-fetch(`https://api.jikan.moe/v4/anime/${id}/characters`)
-  ]);
-
-  const result = await animeRes.json();
-  const castResult = await castRes.json();
-  const castData = castResult.data;
-  const animeData = result.data;
+  const res = await fetch(`/api/jikan/anime/${id}`);
+  const data = await res.json();
+  const animeData = data.anime;
+  const castData = data.characters;
   const trailerUrl = animeData?.trailer?.embed_url;
 
   const show: BookmarkedShow = {
