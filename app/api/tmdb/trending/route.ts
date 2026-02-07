@@ -33,6 +33,35 @@ export async function GET(request: NextRequest) {
       return date >= todayDate;
     };
 
+    const pickUsReleaseDate = (releaseDatesData: any) => {
+      const results = releaseDatesData?.results;
+      if (!Array.isArray(results)) return null;
+      const us = results.find((r: any) => r.iso_3166_1 === "US") || results[0];
+      const dates = us?.release_dates;
+      if (!Array.isArray(dates) || dates.length === 0) return null;
+      const priority = [3, 2, 4, 5, 6, 1];
+      for (const type of priority) {
+        const matches = dates
+          .filter((d: any) => d.type === type && d.release_date)
+          .sort(
+            (a: any, b: any) =>
+              new Date(a.release_date).getTime() -
+              new Date(b.release_date).getTime()
+          );
+        if (matches.length > 0) {
+          return matches[0].release_date.split("T")[0];
+        }
+      }
+      const anyDate = dates
+        .filter((d: any) => d.release_date)
+        .sort(
+          (a: any, b: any) =>
+            new Date(a.release_date).getTime() -
+            new Date(b.release_date).getTime()
+        )[0];
+      return anyDate?.release_date?.split("T")[0] ?? null;
+    };
+
     const fetchTvDetails = async (ids: number[]) => {
       const details = await Promise.all(
         ids.map((id) =>
@@ -100,9 +129,32 @@ export async function GET(request: NextRequest) {
       first_air_date: item.aired?.from || item.start_date
     }));
 
+    // Update movie release dates (US) for items likely to be shown
+    const maxItems = Math.min(moviesWithType.length, tvWithType.length, animeWithType.length, 4); // 4 of each for total 12
+    const movieSlice = moviesWithType.slice(0, maxItems);
+    const movieReleaseDetails = await Promise.all(
+      movieSlice.map((item) =>
+        fetch(`https://api.themoviedb.org/3/movie/${item.id}/release_dates`, API_OPTIONS)
+          .then((r) => r.json())
+          .catch(() => null)
+      )
+    );
+    const movieDateMap = new Map(
+      movieReleaseDetails
+        .map((d: any) => {
+          if (!d?.id) return null;
+          const date = pickUsReleaseDate(d);
+          return date ? [d.id, date] : null;
+        })
+        .filter(Boolean) as [number, string][]
+    );
+    for (const item of moviesWithType) {
+      const date = movieDateMap.get(item.id);
+      if (date) item.release_date = date;
+    }
+
     // Interleave movies, TV shows, and anime for balanced display
     const upcoming = [];
-    const maxItems = Math.min(moviesWithType.length, tvWithType.length, animeWithType.length, 4); // 4 of each for total 12
     
     for (let i = 0; i < maxItems; i++) {
       if (moviesWithType[i]) upcoming.push(moviesWithType[i]);

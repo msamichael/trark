@@ -175,8 +175,11 @@ const { isBookmarked, toggleBookmark } = useBookmarkActions();
         >
           {displayList.map((show: any, index: number) => {
             const showName = show.title || show.name || "Untitled";
-            const showImage = show.poster_path
-              ? `https://image.tmdb.org/t/p/w500${show.poster_path}`
+            const rawPoster = show.poster_path;
+            const showImage = rawPoster
+              ? rawPoster.startsWith("http")
+                ? rawPoster
+                : `https://image.tmdb.org/t/p/w500${rawPoster}`
               : show.images?.webp?.large_image_url || null;
             const showId = show.id || show.mal_id;
             const showReleaseDate =

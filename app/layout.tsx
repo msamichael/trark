@@ -43,11 +43,52 @@ export const plusJakarta = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Trark",
-  description: "Never miss your favorite upcoming shows",
+  metadataBase: new URL("https://trarkapp.vercel.app"),
+  title: {
+    default: "Trark — Upcoming Releases Tracker",
+    template: "%s | Trark"
+  },
+  description:
+    "Track upcoming movies, TV series (including new seasons), and anime with search, sorting, and a watchlist.",
   icons: {
     icon: "/icon.png",
   },
+  keywords: [
+    "upcoming movies",
+    "upcoming tv series",
+    "upcoming anime",
+    "release dates",
+    "watchlist",
+    "trailer",
+    "TMDB",
+    "Jikan"
+  ],
+  robots: {
+    index: true,
+    follow: true
+  },
+  openGraph: {
+    type: "website",
+    url: "https://trarkapp.vercel.app",
+    title: "Trark — Upcoming Releases Tracker",
+    description:
+      "Track upcoming movies, TV series (including new seasons), and anime with search, sorting, and a watchlist.",
+    images: [
+      {
+        url: "/icon.png",
+        width: 512,
+        height: 512,
+        alt: "Trark"
+      }
+    ]
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Trark — Upcoming Releases Tracker",
+    description:
+      "Track upcoming movies, TV series (including new seasons), and anime with search, sorting, and a watchlist.",
+    images: ["/icon.png"]
+  }
 };
 
 export default function RootLayout({

@@ -54,7 +54,7 @@ export default function WatchlistGrid({
 
   // Filter upcoming shows (with release dates in future)
   const upcomingShows = watchlistData.filter((show) => {
-    const releaseDateStr = show.release_date || show.first_air_date;
+    const releaseDateStr = show.upcoming_air_date || show.release_date || show.first_air_date;
     // If no date or "TBA", don't include in upcoming
     if (!releaseDateStr || releaseDateStr === "TBA") return false;
     const releaseDate = new Date(releaseDateStr);
@@ -64,7 +64,7 @@ export default function WatchlistGrid({
 
   // Filter available shows (already released)
   const availableShows = watchlistData.filter((show) => {
-    const releaseDateStr = show.release_date || show.first_air_date;
+    const releaseDateStr = show.upcoming_air_date || show.release_date || show.first_air_date;
     // If no date or "TBA", don't include in available
     if (!releaseDateStr || releaseDateStr === "TBA") return false;
     const releaseDate = new Date(releaseDateStr);
@@ -74,7 +74,7 @@ export default function WatchlistGrid({
 
   // Filter unknown shows (no date or "TBA")
   const unknownShows = watchlistData.filter((show) => {
-    const releaseDateStr = show.release_date || show.first_air_date;
+    const releaseDateStr = show.upcoming_air_date || show.release_date || show.first_air_date;
     // If no date or "TBA", include in unknown
     if (!releaseDateStr || releaseDateStr === "TBA") return true;
     return false;
@@ -101,7 +101,7 @@ export default function WatchlistGrid({
                     : ""
                 }
                 showReleaseDate={
-                  show.release_date || show.first_air_date || show.aired?.string || "TBA"
+                  show.upcoming_air_date || show.release_date || show.first_air_date || show.aired?.string || "TBA"
                 }
                 bookmarked={isBookmarked({
                   id: show.id,
@@ -141,7 +141,7 @@ export default function WatchlistGrid({
                     : ""
                 }
                 showReleaseDate={
-                  show.release_date || show.first_air_date || show.aired?.string || "TBA"
+                  show.upcoming_air_date || show.release_date || show.first_air_date || show.aired?.string || "TBA"
                 }
                 bookmarked={isBookmarked({
                   id: show.id,

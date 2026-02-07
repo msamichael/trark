@@ -61,6 +61,35 @@ export async function GET(request: NextRequest) {
       return date >= today;
     };
 
+    const pickUsReleaseDate = (releaseDatesData: any) => {
+      const results = releaseDatesData?.results;
+      if (!Array.isArray(results)) return null;
+      const us = results.find((r: any) => r.iso_3166_1 === "US") || results[0];
+      const dates = us?.release_dates;
+      if (!Array.isArray(dates) || dates.length === 0) return null;
+      const priority = [3, 2, 4, 5, 6, 1];
+      for (const type of priority) {
+        const matches = dates
+          .filter((d: any) => d.type === type && d.release_date)
+          .sort(
+            (a: any, b: any) =>
+              new Date(a.release_date).getTime() -
+              new Date(b.release_date).getTime()
+          );
+        if (matches.length > 0) {
+          return matches[0].release_date.split("T")[0];
+        }
+      }
+      const anyDate = dates
+        .filter((d: any) => d.release_date)
+        .sort(
+          (a: any, b: any) =>
+            new Date(a.release_date).getTime() -
+            new Date(b.release_date).getTime()
+        )[0];
+      return anyDate?.release_date?.split("T")[0] ?? null;
+    };
+
     const enrichTvResults = async (results: any[]) => {
       if (!results?.length) return [];
       const slice = results.slice(0, ENHANCE_LIMIT);
@@ -140,6 +169,29 @@ export async function GET(request: NextRequest) {
       });
 
       data.results = results;
+    }
+    
+    if (type === "movie" && Array.isArray(data?.results)) {
+      const details = await Promise.all(
+        data.results.map((item: any) =>
+          fetch(`${TMDB_BASE_URL}/movie/${item.id}/release_dates`, API_OPTIONS)
+            .then((r) => r.json())
+            .catch(() => null)
+        )
+      );
+      const dateMap = new Map(
+        details
+          .map((d: any) => {
+            if (!d?.id) return null;
+            const date = pickUsReleaseDate(d);
+            return date ? [d.id, date] : null;
+          })
+          .filter(Boolean) as [number, string][]
+      );
+      data.results = data.results.map((item: any) => ({
+        ...item,
+        release_date: dateMap.get(item.id) || item.release_date
+      }));
     }
 
     return NextResponse.json(data, {

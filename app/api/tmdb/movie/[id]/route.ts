@@ -14,15 +14,51 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       }
     };
 
-    const [movieRes, creditsRes, videoRes] = await Promise.all([
+    const [movieRes, creditsRes, videoRes, releaseDatesRes] = await Promise.all([
       fetch(`${TMDB_BASE_URL}/movie/${id}?language=en-US`, API_OPTIONS),
       fetch(`${TMDB_BASE_URL}/movie/${id}/credits?language=en-US`, API_OPTIONS),
-      fetch(`${TMDB_BASE_URL}/movie/${id}/videos?language=en-US`, API_OPTIONS)
+      fetch(`${TMDB_BASE_URL}/movie/${id}/videos?language=en-US`, API_OPTIONS),
+      fetch(`${TMDB_BASE_URL}/movie/${id}/release_dates`, API_OPTIONS)
     ]);
 
     const movieData = await movieRes.json();
     const creditsData = await creditsRes.json();
     const videoData = await videoRes.json();
+    const releaseDatesData = await releaseDatesRes.json();
+
+    const pickUsReleaseDate = (data: any) => {
+      const results = data?.results;
+      if (!Array.isArray(results)) return null;
+      const us = results.find((r: any) => r.iso_3166_1 === "US") || results[0];
+      const dates = us?.release_dates;
+      if (!Array.isArray(dates) || dates.length === 0) return null;
+      const priority = [3, 2, 4, 5, 6, 1];
+      for (const type of priority) {
+        const matches = dates
+          .filter((d: any) => d.type === type && d.release_date)
+          .sort(
+            (a: any, b: any) =>
+              new Date(a.release_date).getTime() -
+              new Date(b.release_date).getTime()
+          );
+        if (matches.length > 0) {
+          return matches[0].release_date.split("T")[0];
+        }
+      }
+      const anyDate = dates
+        .filter((d: any) => d.release_date)
+        .sort(
+          (a: any, b: any) =>
+            new Date(a.release_date).getTime() -
+            new Date(b.release_date).getTime()
+        )[0];
+      return anyDate?.release_date?.split("T")[0] ?? null;
+    };
+
+    const usReleaseDate = pickUsReleaseDate(releaseDatesData);
+    if (usReleaseDate) {
+      movieData.release_date = usReleaseDate;
+    }
 
     return NextResponse.json({
       movie: movieData,

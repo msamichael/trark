@@ -87,6 +87,7 @@ export default function WatchlistPage() {
               title: data.title || data.name || "Unknown",
               name: data.title || data.name || "Unknown",
               poster_path: data.poster_path,
+              upcoming_air_date: data?.next_episode_to_air?.air_date || null,
               release_date: data.release_date || data.first_air_date || "TBA",
               first_air_date: data.first_air_date || data.release_date || "TBA",
             };
