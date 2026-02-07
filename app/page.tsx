@@ -3,6 +3,7 @@
 import SearchBar from "./components/ui/SearchBar";
 import SortBar from "./components/ui/SortBar";
 import CategoryTab from "./components/ui/CategoryTab";
+import GenreRow from "./components/ui/GenreRow";
 import ShowGrid from "./components/layout/ShowGrid";
 import HeroCarousel from "./components/layout/HeroCarousel";
 import MostAnticipatedSection from "./components/layout/MostAnticipatedSection";
@@ -36,6 +37,7 @@ export default function Home() {
   return (
     <div className="p-2.5 scroll-smooth">
       <div className="flex justify-between items-center mb-4">
+        {/* Trark Logo */}
         <div className="flex items-center self-start gap-3 ml-4 mt-2 pl-2 md:pl-6">
           <img
             src="/icon.png"
@@ -88,13 +90,6 @@ export default function Home() {
 
               {/* Desktop: avatar + logout button */}
               <div className="hidden md:flex items-center gap-3">
-                {user.photoURL && (
-                  <img
-                    src={user.photoURL}
-                    alt="User"
-                    className="w-8 h-8 rounded-full object-cover border-2 border-zinc-700"
-                  />
-                )}
                 <Button
                   variant="outline"
                   size="sm"
@@ -104,6 +99,13 @@ export default function Home() {
                   <LogOut size={16} />
                   <span className="hidden sm:inline">Logout</span>
                 </Button>
+                {user.photoURL && (
+                  <img
+                    src={user.photoURL}
+                    alt="User"
+                    className="w-8 h-8 mr-4 rounded-full object-cover border-2 border-zinc-700"
+                  />
+                )}
               </div>
             </>
           ) : (
@@ -125,7 +127,7 @@ export default function Home() {
         <section className="max-w-300 mx-auto w-full mt-13 ">
           {/* Search Bar & Sort  */}
           <div
-            className="flex mb-8 gap-2 sticky top-2 z-20 
+            className="flex mb-8 gap-2 sticky top-2 z-80 
           bg-(--color-background)/90 p-3 rounded-3xl"
           >
             <div className="flex-2">
@@ -139,6 +141,9 @@ export default function Home() {
 
           {/* Category Section */}
           <CategoryTab />
+
+          {/* Genre Row */}
+          <GenreRow />
 
           {/* Show Grid */}
           <ShowGrid />

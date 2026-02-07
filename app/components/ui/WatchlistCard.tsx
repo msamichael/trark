@@ -4,6 +4,7 @@ import Image from "next/image";
 import { CalendarDays, BookmarkIcon, Clock, Play } from "lucide-react";
 import Link from "next/link";
 import { Toggle } from "@/components/ui/toggle";
+import ImageFallback from "@/app/components/ui/ImageFallback";
 
 type ShowType = "anime" | "movies" | "series";
 
@@ -104,13 +105,20 @@ export default function WatchlistCard({
             {/* Poster */}
             <div className="relative flex-shrink-0">
               <div className="relative w-[100px] h-[150px] rounded-xl overflow-hidden shadow-lg group-hover:shadow-2xl group-hover:shadow-purple-500/20 transition-all duration-500">
-                <Image
-                  src={showImage}
-                  width={100}
-                  height={150}
-                  className="object-cover w-full h-full"
-                  alt={`${showName} poster`}
-                />
+                {showImage ? (
+                  <Image
+                    src={showImage}
+                    width={100}
+                    height={150}
+                    className="object-cover w-full h-full"
+                    alt={`${showName} poster`}
+                  />
+                ) : (
+                  <ImageFallback
+                    className="w-full h-full"
+                    label="No Poster"
+                  />
+                )}
                 
                 {/* Play button overlay on hover */}
                 <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">

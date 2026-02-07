@@ -14,6 +14,7 @@ import { Separator } from "@/components/ui/separator";
 import { BookmarkedShow } from "@/app/store/bookmarkSlice";
 import BookmarkButton from "@/app/components/ui/BookmarkButton";
 import { headers } from "next/headers";
+import ImageFallback from "@/app/components/ui/ImageFallback";
 
 type SeriesPageProps = {
   params: Promise<{ id: string }>;
@@ -115,17 +116,17 @@ export default async function SeriesPage({ params }: SeriesPageProps) {
         <div className="relative flex flex-col md:flex-row gap-6 p-6 sm:p-10 mt-5 sm:mt-10 mb-4">
           {/* TV Show Poster */}
           <div className="flex-shrink-0 border-2 border-background/80 rounded h-[300px] w-[200px] sm:h-[400px] sm:w-[270px] overflow-hidden mx-auto md:mx-0 relative">
-            <Image
-              src={
-                tvData?.poster_path
-                  ? `https://image.tmdb.org/t/p/w500${tvData.poster_path}`
-                  : "/no-poster.png"
-              }
-              fill
-              priority
-              className="object-cover"
-              alt={tvData?.name || "TV Show Poster"}
-            />
+            {tvData?.poster_path ? (
+              <Image
+                src={`https://image.tmdb.org/t/p/w500${tvData.poster_path}`}
+                fill
+                priority
+                className="object-cover"
+                alt={tvData?.name || "TV Show Poster"}
+              />
+            ) : (
+              <ImageFallback className="h-full w-full" label="No Poster" />
+            )}
           </div>
 
           <div className="flex flex-col gap-4 flex-1">
@@ -261,17 +262,21 @@ export default async function SeriesPage({ params }: SeriesPageProps) {
                   className="flex-shrink-0 w-full sm:w-[100px] text-center space-y-2"
                 >
                   <div className="w-[90px] h-[90px] rounded-full overflow-hidden border-2 border-zinc-800 mx-auto">
-                    <Image
-                      src={
-                        actor.profile_path
-                          ? `https://image.tmdb.org/t/p/w185${actor.profile_path}`
-                          : "/no-poster.png"
-                      }
-                      alt={actor.name}
-                      width={90}
-                      height={90}
-                      className="object-cover w-full h-full"
-                    />
+                    {actor.profile_path ? (
+                      <Image
+                        src={`https://image.tmdb.org/t/p/w185${actor.profile_path}`}
+                        alt={actor.name}
+                        width={90}
+                        height={90}
+                        className="object-cover w-full h-full"
+                      />
+                    ) : (
+                      <ImageFallback
+                        variant="avatar"
+                        className="w-full h-full"
+                        label="No Photo"
+                      />
+                    )}
                   </div>
                   <p className="text-sm font-medium text-white line-clamp-1">
                     {actor.name}

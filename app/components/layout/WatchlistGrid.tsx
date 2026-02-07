@@ -98,7 +98,7 @@ export default function WatchlistGrid({
                     ? show.type === "anime"
                       ? show.poster_path
                       : `https://image.tmdb.org/t/p/w500${show.poster_path}`
-                    : "/no-poster.png"
+                    : ""
                 }
                 showReleaseDate={
                   show.release_date || show.first_air_date || show.aired?.string || "TBA"
@@ -138,7 +138,7 @@ export default function WatchlistGrid({
                     ? show.type === "anime"
                       ? show.poster_path
                       : `https://image.tmdb.org/t/p/w500${show.poster_path}`
-                    : "/no-poster.png"
+                    : ""
                 }
                 showReleaseDate={
                   show.release_date || show.first_air_date || show.aired?.string || "TBA"
@@ -178,7 +178,7 @@ export default function WatchlistGrid({
                     ? show.type === "anime"
                       ? show.poster_path
                       : `https://image.tmdb.org/t/p/w500${show.poster_path}`
-                    : "/no-poster.png"
+                    : ""
                 }
                 showReleaseDate="Unknown"
                 bookmarked={isBookmarked({

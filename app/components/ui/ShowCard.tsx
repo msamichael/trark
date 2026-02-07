@@ -4,6 +4,7 @@ import Image from "next/image";
 import { CalendarDays, BookmarkIcon } from "lucide-react";
 import Link from "next/link";
 import { Toggle } from "@/components/ui/toggle";
+import ImageFallback from "@/app/components/ui/ImageFallback";
 
 type ShowType = "anime" | "movies" | "series";
 
@@ -58,13 +59,9 @@ export default function ShowCard({
               alt={`${showName} poster`}
             />
           ) : (
-            <Image
-              src={"/no-poster.png"}
-              width={230}
-              height={300}
-              className="object-cover rounded-lg 
-      h-[240px] sm:h-[300px] w-[180px] sm:w-[230px]"
-              alt={`${showName} poster`}
+            <ImageFallback
+              className="h-[240px] sm:h-[300px] w-[180px] sm:w-[230px]"
+              label="No Poster"
             />
           )}
 

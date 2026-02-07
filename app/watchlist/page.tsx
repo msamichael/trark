@@ -15,6 +15,7 @@ import { clearAllFirebaseBookmarks } from "../lib/firebaseStorage";
 import { clearLocalBookmarks } from "../lib/bookmarkStorage";
 import { useAuth } from "../hooks/useAuth";
 import { clearBookmarks } from "../store/bookmarkSlice";
+import Link from "next/link";
 
 
 
@@ -212,6 +213,12 @@ export default function WatchlistPage() {
               {filteredData.length} {filteredData.length === 1 ? "show" : "shows"} saved
             </p>
           </div>
+          <Link
+            href="/"
+            className="text-sm text-zinc-400 hover:text-white transition-colors"
+          >
+            Back
+          </Link>
           
           
         </div>
