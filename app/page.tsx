@@ -49,7 +49,7 @@ export default function Home() {
         <div className="flex justify-end gap-x-4 items-center">
           <Link
             href="/watchlist"
-            className="mr-4 flex items-center gap-2 bg-zinc-900/50 hover:bg-zinc-900/80 px-4 py-2 rounded-lg border border-zinc-800 transition-all duration-300 hover:border-zinc-700"
+            className="mr-1 flex items-center gap-2 bg-zinc-900/50 hover:bg-zinc-900/80 px-4 py-2 rounded-lg border border-zinc-800 transition-all duration-300 hover:border-zinc-700"
           >
             <BookmarkIcon size={20} className="text-zinc-400" />
             <span className="text-sm text-white">Watchlist</span>

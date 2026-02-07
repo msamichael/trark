@@ -206,7 +206,7 @@ export default function WatchlistPage() {
     <div className="py-8 px-6">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="flex flex-col sm:flex-row justify-between items-center mb-8 gap-4">
+        <div className="flex items-center justify-between mb-8">
           <div>
             <h1 className="text-3xl font-bold text-white mb-2">My Watchlist</h1>
             <p className="text-zinc-400">
