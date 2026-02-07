@@ -15,7 +15,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import { cn } from "@/lib/utils";
+import { cn } from "@/config/utils";
 import { Button } from "@/components/ui/button";
 import { setSearchQuery } from "@/app/store/searchSlice";
 import { Search } from "lucide-react";

@@ -1,6 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  reactStrictMode: false,
   /* config options here */
   images:{
     remotePatterns:[
@@ -10,7 +11,7 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: 'https',
-        hostname: '"image.tmdb.org'
+        hostname: 'image.tmdb.org'
       }
     ]
   }

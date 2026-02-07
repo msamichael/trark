@@ -1,8 +1,10 @@
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
+import { clear } from "console";
 
 export type BookmarkedShow = {
     id:number;
   type: 'anime'|'movies'|'series';
+  createdAt?: number;
 };
 type BookmarkListState = {
 
@@ -34,9 +36,12 @@ const bookmarkSlice = createSlice({
             state.bookmarks = state.bookmarks.filter(
                 b=>!(b.id === action.payload.id && b.type === action.payload.type)
             );
+        },
+        clearBookmarks(state){
+            state.bookmarks = [];
         }
     }
 });
 
-export const { setBookmarks, addBookmark, removeBookmark } = bookmarkSlice.actions;
+export const { setBookmarks, addBookmark, removeBookmark, clearBookmarks } = bookmarkSlice.actions;
 export default bookmarkSlice.reducer;

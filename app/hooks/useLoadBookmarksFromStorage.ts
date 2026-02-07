@@ -1,51 +1,62 @@
 'use client';
 import { useDispatch } from 'react-redux';
-import { useEffect, useState, useRef } from 'react';
-import { loadLocalBookmarks } from '../lib/bookmarkStorage';
+import { useEffect, useState } from 'react';
+import { loadLocalBookmarks, clearLocalBookmarks } from '../lib/bookmarkStorage';
+import { getBookmarksFromFirebase, saveBookmarksToFirebase } from '../lib/firebaseStorage';
 import { setBookmarks } from '../store/bookmarkSlice';
 
-export function useLoadBookmarksFromStorage(isLoggedIn: boolean){
-    const dispatch = useDispatch();
-    const [hasLoaded, setHasLoaded] = useState(false);
-    const hasLoadedRef = useRef(false);
+export function useLoadBookmarksFromStorage(
+  isLoggedIn: boolean,
+  userId: string | null
+) {
+  const dispatch = useDispatch();
+  const [hasLoaded, setHasLoaded] = useState(false);
 
- 
-    useEffect(() => {
-        console.log('🔍 useLoadBookmarksFromStorage effect triggered', { 
-            isLoggedIn,
-            hasLoadedRef: hasLoadedRef.current,
-            hasLoaded
-        });
+  useEffect(() => {
+    let cancelled = false;
 
-        // Only run once
-        if (hasLoadedRef.current) {
-            console.log('⏭️ Already loaded, skipping');
-            return;
+    async function load() {
+      setHasLoaded(false);
+
+      if (isLoggedIn && userId) {
+        const guestBookmarks = loadLocalBookmarks();
+        if (guestBookmarks.length > 0) {
+          try {
+            await saveBookmarksToFirebase(userId, guestBookmarks);
+            clearLocalBookmarks();
+          } catch (error) {
+            console.error('❌ Failed to migrate local bookmarks:', error);
+          }
         }
-        
-        hasLoadedRef.current = true;
-        
-        if (isLoggedIn) {
-            console.log('✅ User logged in, skipping localStorage load');
+
+        try {
+          const bookmarks = await getBookmarksFromFirebase(userId);
+          if (!cancelled) {
+            dispatch(setBookmarks(bookmarks));
+          }
+        } catch (error) {
+          console.error('❌ Failed to load bookmarks from Firebase:', error);
+        } finally {
+          if (!cancelled) {
             setHasLoaded(true);
-            return;
+          }
         }
-        
-        console.log('📦 About to call loadLocalBookmarks()...');
-        const local = loadLocalBookmarks();
-        console.log('📦 Loaded bookmarks:', local);
-        
-        if (local.length > 0) {
-            console.log('✅ Dispatching setBookmarks to Redux with:', local);
-            dispatch(setBookmarks(local));
-        } else {
-            console.log('⚠️ No bookmarks found in localStorage');
-        }
-        
-        setHasLoaded(true);
-        console.log('✅ setHasLoaded(true) called');
-    }, [isLoggedIn, dispatch]);
+        return;
+      }
 
-    console.log('🔄 useLoadBookmarksFromStorage returning:', hasLoaded);
-    return hasLoaded;
+      const local = loadLocalBookmarks();
+      if (!cancelled) {
+        dispatch(setBookmarks(local));
+        setHasLoaded(true);
+      }
+    }
+
+    load();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [isLoggedIn, userId, dispatch]);
+
+  return hasLoaded;
 }

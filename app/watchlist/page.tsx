@@ -11,6 +11,12 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import ConfirmModal from "../components/ui/ConfirmModal";
+import { clearAllFirebaseBookmarks } from "../lib/firebaseStorage";
+import { clearLocalBookmarks } from "../lib/bookmarkStorage";
+import { useAuth } from "../hooks/useAuth";
+import { clearBookmarks } from "../store/bookmarkSlice";
+
+
 
 
 const TMDB_API_ACCESS_TOKEN = process.env.NEXT_PUBLIC_TMDB_API_ACCESS_TOKEN;
@@ -26,6 +32,8 @@ const API_OPTIONS = {
 };
 
 export default function WatchlistPage() {
+  const dispatch = useDispatch();
+  const {user} = useAuth();
   const { bookmarks } = useSelector((state: RootState) => state.bookmark);
   const { isBookmarked, toggleBookmark } = useBookmarkActions();
   const [watchlistData, setWatchlistData] = useState<any[]>([]);
@@ -113,16 +121,38 @@ export default function WatchlistPage() {
     setConfirmModalOpen(true);
   };
 
-  const handleConfirmClear = () => {
-    setClearing(true);
-    bookmarks.forEach((bookmark) => {
-      toggleBookmark(bookmark, false);
-    });
-    setTimeout(() => {
-      setClearing(false);
-    }, 500);
+  const handleConfirmClear = async () => {
+  setClearing(true);
+  try {
+    // 1. Clear Redux
+    dispatch(clearBookmarks());
+    
+    // 2. If logged in, clear Firebase in one batch
+    if (user) {
+      await clearAllFirebaseBookmarks(user.uid);
+    }
+    clearLocalBookmarks();
+  } finally {
+    setClearing(false);
     setConfirmModalOpen(false);
-  };
+  }
+};
+
+  // const handleConfirmClear = async () => {
+  //   setClearing(true);
+  //   bookmarks.forEach((bookmark) => {
+  //     toggleBookmark(bookmark, false);
+  //   });
+  //   setTimeout(() => {
+  //     setClearing(false);
+  //   }, 500);
+  //   if (user) await clearAllFirebaseBookmarks(user.uid);
+
+  //   setConfirmModalOpen(false);
+  // };
+
+  
+
 
   const handleCancelClear = () => {
     setConfirmModalOpen(false);
