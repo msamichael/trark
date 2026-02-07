@@ -111,7 +111,7 @@ export default function Home() {
           ) : (
             <Button
               onClick={handleLogin}
-              className="flex items-center gap-2"
+              className="flex items-center mr-4 gap-2 border border-purple-400/40 bg-gradient-to-r from-purple-600/80 to-indigo-600/80 text-white hover:from-purple-500 hover:to-indigo-500 shadow-[0_8px_30px_rgba(88,28,135,0.35)]"
             >
               <LogIn size={16} />
               <span>Login</span>
@@ -143,7 +143,9 @@ export default function Home() {
           <CategoryTab />
 
           {/* Genre Row */}
-          <GenreRow />
+          <div className="mt-6 mb-8">
+            <GenreRow />
+          </div>
 
           {/* Show Grid */}
           <ShowGrid />
