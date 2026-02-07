@@ -11,9 +11,11 @@ import { BookmarkIcon, LogIn, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { signInWithGoogle, signOutUser } from "./lib/firebaseStorage";
 import { useAuth } from "./hooks/useAuth";
+import { useState } from "react";
 
 export default function Home() {
   const { user } = useAuth();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const handleLogin = async () => {
     try {
@@ -51,29 +53,59 @@ export default function Home() {
             <span className="text-sm text-white">Watchlist</span>
           </Link>
           {user ? (
-            <div className="flex items-center gap-3">
-              {user.photoURL && (
-                <img
-                  src={user.photoURL}
-                  alt={user.displayName || "User"}
-                  className="w-8 h-8 rounded-full object-cover border-2 border-zinc-700"
-                />
-              )}
-              {user.displayName && (
-                <span className="text-sm text-zinc-300 hidden md:inline">
-                  {user.displayName}
-                </span>
-              )}
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleLogout}
-                className="flex items-center gap-2"
-              >
-                <LogOut size={16} />
-                <span className="hidden sm:inline">Logout</span>
-              </Button>
-            </div>
+            <>
+              {/* Mobile: avatar with dropdown */}
+              <div className="md:hidden relative">
+                <button
+                  type="button"
+                  onClick={() => setMobileMenuOpen((open) => !open)}
+                  className="w-8 h-8 rounded-full overflow-hidden border-2 border-zinc-700"
+                  aria-label="Account menu"
+                >
+                  {user.photoURL ? (
+                    <img
+                      src={user.photoURL}
+                      alt="User"
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-full h-full bg-zinc-700" />
+                  )}
+                </button>
+                {mobileMenuOpen ? (
+                  <div className="absolute right-0 mt-2 w-36 rounded-md border border-zinc-800 bg-zinc-950/95 p-1 shadow-lg z-50">
+                    <button
+                      type="button"
+                      onClick={handleLogout}
+                      className="w-full flex items-center gap-2 rounded px-2 py-2 text-sm text-zinc-200 hover:bg-zinc-800"
+                    >
+                      <LogOut size={14} />
+                      Logout
+                    </button>
+                  </div>
+                ) : null}
+              </div>
+
+              {/* Desktop: avatar + logout button */}
+              <div className="hidden md:flex items-center gap-3">
+                {user.photoURL && (
+                  <img
+                    src={user.photoURL}
+                    alt="User"
+                    className="w-8 h-8 rounded-full object-cover border-2 border-zinc-700"
+                  />
+                )}
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleLogout}
+                  className="flex items-center gap-2"
+                >
+                  <LogOut size={16} />
+                  <span className="hidden sm:inline">Logout</span>
+                </Button>
+              </div>
+            </>
           ) : (
             <Button
               onClick={handleLogin}

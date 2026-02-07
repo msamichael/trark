@@ -11,6 +11,7 @@ export async function GET(request: NextRequest) {
     };
 
     const today = new Date().toISOString().split('T')[0];
+    const ENHANCE_LIMIT = 20;
 
     // Fetch upcoming movies, TV shows, and anime with same filtering as ShowGrid
     const [moviesRes, tvRes, animeRes] = await Promise.all([
@@ -23,9 +24,58 @@ export async function GET(request: NextRequest) {
     const tvData = await tvRes.json();
     const animeData = await animeRes.json();
 
+    const isFutureDate = (dateString?: string | null) => {
+      if (!dateString) return false;
+      const date = new Date(dateString);
+      const todayDate = new Date();
+      date.setHours(0, 0, 0, 0);
+      todayDate.setHours(0, 0, 0, 0);
+      return date >= todayDate;
+    };
+
+    const fetchTvDetails = async (ids: number[]) => {
+      const details = await Promise.all(
+        ids.map((id) =>
+          fetch(`https://api.themoviedb.org/3/tv/${id}?language=en-US`, API_OPTIONS)
+            .then((r) => r.json())
+            .catch(() => null)
+        )
+      );
+      return details.filter(Boolean);
+    };
+
+    // Bring in ongoing shows that have a future next episode (proxy for upcoming season)
+    const onAirRes = await fetch(
+      `https://api.themoviedb.org/3/tv/on_the_air?language=en-US&page=1`,
+      API_OPTIONS
+    );
+    const onAirData = await onAirRes.json();
+    const onAirSlice = (onAirData?.results || []).slice(0, ENHANCE_LIMIT);
+    const onAirDetails = await fetchTvDetails(onAirSlice.map((item: any) => item.id));
+    const upcomingOnAir = onAirDetails
+      .filter((detail: any) => isFutureDate(detail?.next_episode_to_air?.air_date))
+      .map((detail: any) => ({
+        id: detail.id,
+        name: detail.name,
+        title: detail.name,
+        overview: detail.overview,
+        poster_path: detail.poster_path,
+        backdrop_path: detail.backdrop_path,
+        first_air_date: detail.first_air_date,
+        popularity: detail.popularity,
+        vote_average: detail.vote_average,
+        upcoming_air_date: detail?.next_episode_to_air?.air_date,
+        next_season_number: detail?.next_episode_to_air?.season_number
+      }));
+
+    const mergedTv = new Map<number, any>();
+    for (const item of tvData.results || []) mergedTv.set(item.id, item);
+    for (const item of upcomingOnAir) mergedTv.set(item.id, item);
+    const mergedTvList = Array.from(mergedTv.values());
+
     // Ensure 3-way mix of movies, TV shows, and anime
     const filteredMovies = (moviesData.results as any[]).filter(item => item.backdrop_path);
-    const filteredTV = (tvData.results as any[]).filter(item => item.backdrop_path);
+    const filteredTV = mergedTvList.filter((item: any) => item.backdrop_path);
     const filteredAnime = (animeData.data as any[]).filter(item => item.images?.webp?.large_image_url);
     
     // Add type field for identification

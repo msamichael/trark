@@ -7,6 +7,7 @@ import TrailerModal from "@/app/components/layout/TrailerModal";
 import { Separator } from "@/components/ui/separator";
 import { BookmarkedShow } from "@/app/store/bookmarkSlice";
 import BookmarkButton from "@/app/components/ui/BookmarkButton";
+import { headers } from "next/headers";
 
 type AnimePageProps = {
   params:  Promise<{ id: string }> ;
@@ -15,7 +16,13 @@ type AnimePageProps = {
 export default async function AnimePage({ params }: AnimePageProps) {
   const { id } = await params;
 
-  const res = await fetch(`/api/jikan/anime/${id}`);
+  const headerList = await headers();
+  const host = headerList.get("x-forwarded-host") ?? headerList.get("host");
+  const proto = headerList.get("x-forwarded-proto") ?? "http";
+  const baseUrl =
+    host ? `${proto}://${host}` : process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+
+  const res = await fetch(`${baseUrl}/api/jikan/anime/${id}`);
   const data = await res.json();
   const animeData = data.anime;
   const castData = data.characters;

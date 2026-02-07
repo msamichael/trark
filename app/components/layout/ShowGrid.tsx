@@ -45,7 +45,7 @@ const { isBookmarked, toggleBookmark } = useBookmarkActions();
   const displayList = showList.filter((show: any) => {
     if (categoryTab === "anime") return true;
 
-    const dateStr = show.release_date || show.first_air_date;
+    const dateStr = show.upcoming_air_date || show.release_date || show.first_air_date;
     if (!dateStr) return false;
     const releaseDate = new Date(dateStr);
     const bufferDate = new Date();
@@ -180,6 +180,7 @@ const { isBookmarked, toggleBookmark } = useBookmarkActions();
               : show.images?.webp?.large_image_url || null;
             const showId = show.id || show.mal_id;
             const showReleaseDate =
+              show.upcoming_air_date ||
               show.release_date ||
               show.first_air_date ||
               show.aired?.string ||

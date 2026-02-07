@@ -7,6 +7,7 @@ import TrailerModal from "@/app/components/layout/TrailerModal";
 import { Separator } from "@/components/ui/separator";
 import { BookmarkedShow } from "@/app/store/bookmarkSlice";
 import BookmarkButton from "@/app/components/ui/BookmarkButton";
+import { headers } from "next/headers";
 
 type MoviePageProps = {
   params: Promise<{ id: string }>;
@@ -15,7 +16,13 @@ type MoviePageProps = {
 export default async function MoviePage({ params }: MoviePageProps) {
   const { id } = await params;
 
-  const res = await fetch(`/api/tmdb/movie/${id}`);
+  const headerList = await headers();
+  const host = headerList.get("x-forwarded-host") ?? headerList.get("host");
+  const proto = headerList.get("x-forwarded-proto") ?? "http";
+  const baseUrl =
+    host ? `${proto}://${host}` : process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+
+  const res = await fetch(`${baseUrl}/api/tmdb/movie/${id}`);
   const data = await res.json();
   const movieData = data.movie;
   const creditsData = data.credits;

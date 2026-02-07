@@ -13,6 +13,7 @@ import TrailerModal from "@/app/components/layout/TrailerModal";
 import { Separator } from "@/components/ui/separator";
 import { BookmarkedShow } from "@/app/store/bookmarkSlice";
 import BookmarkButton from "@/app/components/ui/BookmarkButton";
+import { headers } from "next/headers";
 
 type SeriesPageProps = {
   params: Promise<{ id: string }>;
@@ -21,7 +22,13 @@ type SeriesPageProps = {
 export default async function SeriesPage({ params }: SeriesPageProps) {
   const { id } = await params;
 
-  const res = await fetch(`/api/tmdb/tv/${id}`);
+  const headerList = await headers();
+  const host = headerList.get("x-forwarded-host") ?? headerList.get("host");
+  const proto = headerList.get("x-forwarded-proto") ?? "http";
+  const baseUrl =
+    host ? `${proto}://${host}` : process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+
+  const res = await fetch(`${baseUrl}/api/tmdb/tv/${id}`);
   const data = await res.json();
   const tvData = data.tv;
   const creditsData = data.credits;
@@ -84,6 +91,9 @@ export default async function SeriesPage({ params }: SeriesPageProps) {
     return `Releases in ${days} days`;
   };
 
+  const nextAirDate =
+    tvData?.next_episode_to_air?.air_date || tvData?.first_air_date;
+
   return (
     <div>
       <TrailerModal trailerUrl={trailerUrl} />
@@ -130,7 +140,7 @@ export default async function SeriesPage({ params }: SeriesPageProps) {
                 bg-indigo-500/10 text-sm w-fit px-2 py-0.5 font-medium text-indigo-400 mx-auto md:mx-0"
               >
                 <Clock className="h-[15px] w-[15px]" />
-                {formatCountdown(tvData.first_air_date)}
+                {formatCountdown(nextAirDate)}
               </p>
 
               <div className="flex flex-wrap items-center justify-center md:justify-start gap-3 text-sm">
@@ -157,7 +167,7 @@ export default async function SeriesPage({ params }: SeriesPageProps) {
                 <div className="flex gap-1">
                   <CalendarDays size={18} />
                   <p className="text-zinc-300">
-                    {formatDate(tvData?.first_air_date)}
+                    {formatDate(nextAirDate)}
                   </p>
                 </div>
               </div>
@@ -204,6 +214,17 @@ export default async function SeriesPage({ params }: SeriesPageProps) {
               {tvData?.number_of_episodes}
             </p>
           </div>
+          {tvData?.next_episode_to_air?.season_number ? (
+            <div>
+              <h3 className="text-white font-semibold mb-1">Next Season</h3>
+              <p className="text-zinc-400 text-sm">
+                Season {tvData.next_episode_to_air.season_number}
+                {tvData?.next_episode_to_air?.air_date
+                  ? ` • ${formatDate(tvData.next_episode_to_air.air_date)}`
+                  : ""}
+              </p>
+            </div>
+          ) : null}
           <div>
             <h3 className="text-white font-semibold mb-1">Network</h3>
             {tvData?.networks?.map((network: any) => (

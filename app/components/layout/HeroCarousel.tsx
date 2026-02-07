@@ -14,6 +14,7 @@ interface HeroItem {
   type: 'movie' | 'tv' | 'anime' | 'hero';
   release_date?: string;
   first_air_date?: string;
+  upcoming_air_date?: string;
 }
 
 // Original hero section as special slide
@@ -41,8 +42,18 @@ export default function HeroCarousel() {
     try {
       const res = await fetch('/api/tmdb/trending'); // Keeping same endpoint for simplicity
       const data = await res.json();
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const filtered = (data as HeroItem[]).filter((item) => {
+        if (item.type !== "tv") return true;
+        const dateStr = item.upcoming_air_date || item.first_air_date;
+        if (!dateStr) return false;
+        const date = new Date(dateStr);
+        date.setHours(0, 0, 0, 0);
+        return date >= today;
+      });
       // Add original hero as first slide
-      setItems([originalHero, ...data]);
+      setItems([originalHero, ...filtered]);
     } catch (error) {
       console.error('Failed to fetch upcoming data:', error);
       setItems([originalHero]);
@@ -55,7 +66,7 @@ export default function HeroCarousel() {
     if (items.length > 0) {
       const interval = setInterval(() => {
         setCurrentIndex((prev) => (prev + 1) % items.length);
-      }, 5800); // 5.8 seconds per slide
+      }, 4500); // 4.5 seconds per slide
 
       return () => clearInterval(interval);
     }
@@ -92,7 +103,9 @@ export default function HeroCarousel() {
   const currentItem = items[currentIndex];
 
   return (
-    <header className="relative overflow-hidden max-w-300 mx-auto mt-5 rounded-3xl border border-purple-500/20 bg-black group mb-4 min-h-[400px]">
+    <header
+      className="relative overflow-hidden max-w-300 mx-auto mt-5 rounded-3xl border border-purple-500/20 bg-black group mb-4 min-h-[400px]"
+    >
       {/* Backdrop Image or Original Hero Gradient */}
       <div className="relative h-[600px]">
         {currentItem.type === 'hero' ? (
@@ -192,7 +205,7 @@ export default function HeroCarousel() {
         <Button
           variant="ghost"
           size="icon"
-          className="absolute top-1/2 left-4 transform -translate-y-1/2 bg-black/30 hover:bg-black/50 text-white backdrop-blur-sm rounded-full transition-all duration-300 opacity-0 group-hover:opacity-100"
+          className="absolute top-1/2 left-4 transform -translate-y-1/2 bg-black/30 hover:bg-black/50 text-white backdrop-blur-sm rounded-full transition-all duration-300 opacity-100 md:opacity-0 md:group-hover:opacity-100 z-20"
           onClick={handlePrev}
         >
           <ChevronLeft className="h-8 w-8" />
@@ -200,7 +213,7 @@ export default function HeroCarousel() {
         <Button
           variant="ghost"
           size="icon"
-          className="absolute top-1/2 right-4 transform -translate-y-1/2 bg-black/30 hover:bg-black/50 text-white backdrop-blur-sm rounded-full transition-all duration-300 opacity-0 group-hover:opacity-100"
+          className="absolute top-1/2 right-4 transform -translate-y-1/2 bg-black/30 hover:bg-black/50 text-white backdrop-blur-sm rounded-full transition-all duration-300 opacity-100 md:opacity-0 md:group-hover:opacity-100 z-20"
           onClick={handleNext}
         >
           <ChevronRight className="h-8 w-8" />
@@ -208,7 +221,7 @@ export default function HeroCarousel() {
       </div>
 
       {/* Progress Dots */}
-      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex gap-2">
+      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex gap-2 z-20">
         {items.map((_, index) => (
           <button
             key={index}
