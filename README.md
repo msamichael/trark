@@ -68,9 +68,11 @@ Open [http://localhost:3000](http://localhost:3000).
 ---
 
 ## Project Structure
+```
 app/
 ├── (pages)/        # Route-based pages (movies, tv, anime, watchlist)
 ├── api/            # API route handlers
 components/
 ├── ui/             # Shadcn/ui base components
 config/             # App-wide configuration
+```
