@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import ShowCard from "../ui/ShowCard";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useBookmarkActions } from "@/app/hooks/useBookmarkActions";
+import { getShowReleaseDate } from "@/app/lib/releaseDate";
 
 type Category = "movies" | "series" | "anime";
 
@@ -86,12 +87,7 @@ export default function GenreGrid({ category, slug }: GenreGridProps) {
               ? `https://image.tmdb.org/t/p/w500${rawPoster}`
               : null;
           const showId = show.id || show.mal_id;
-          const showReleaseDate =
-            show.upcoming_air_date ||
-            show.release_date ||
-            show.first_air_date ||
-            show.aired?.string ||
-            "TBA";
+          const showReleaseDate = getShowReleaseDate(show);
 
           return (
             <ShowCard

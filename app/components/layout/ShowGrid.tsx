@@ -20,6 +20,7 @@ import { Button } from "@/components/ui/button";
 import { setSearchQuery } from "@/app/store/searchSlice";
 import { Search } from "lucide-react";
 import { useBookmarkActions } from "@/app/hooks/useBookmarkActions";
+import { getShowReleaseDate } from "@/app/lib/releaseDate";
 
 export default function ShowGrid() {
   const dispatch = useDispatch();
@@ -40,8 +41,7 @@ export default function ShowGrid() {
 
 const { isBookmarked, toggleBookmark } = useBookmarkActions();
 
-  // ... rest of your code stays the same ...
-
+  
   const displayList = showList.filter((show: any) => {
     if (categoryTab === "anime") return true;
 
@@ -182,12 +182,7 @@ const { isBookmarked, toggleBookmark } = useBookmarkActions();
                 : `https://image.tmdb.org/t/p/w500${rawPoster}`
               : show.images?.webp?.large_image_url || null;
             const showId = show.id || show.mal_id;
-            const showReleaseDate =
-              show.upcoming_air_date ||
-              show.release_date ||
-              show.first_air_date ||
-              show.aired?.string ||
-              "TBA";
+            const showReleaseDate = getShowReleaseDate(show);
             return (
               <ShowCard
                 key={`${showId} - ${index}`}

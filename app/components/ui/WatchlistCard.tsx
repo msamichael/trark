@@ -5,6 +5,7 @@ import { CalendarDays, BookmarkIcon, Clock, Play } from "lucide-react";
 import Link from "next/link";
 import { Toggle } from "@/components/ui/toggle";
 import ImageFallback from "@/app/components/ui/ImageFallback";
+import { extractIsoDate, formatReleaseDate } from "@/app/lib/releaseDate";
 
 type ShowType = "anime" | "movies" | "series";
 
@@ -29,28 +30,16 @@ export default function WatchlistCard({
 }: WatchlistCardProps) {
   // Format release date
   const formatDate = (dateString: string) => {
-    if (!dateString) return "TBA";
-    
-    const dateMatch = dateString.match(/(\d{4}-\d{2}-\d{2})/);
-    if (dateMatch) {
-      const date = new Date(dateMatch[1]);
-      return date.toLocaleDateString("en-US", {
-        month: "short",
-        day: "numeric",
-        year: "numeric",
-      });
-    }
-    
-    return dateString;
+    return formatReleaseDate(dateString);
   };
 
   // Calculate countdown
   const calculateCountdown = (dateString: string) => {
     if (!dateString) return "TBA";
     
-    const dateMatch = dateString.match(/(\d{4}-\d{2}-\d{2})/);
-    if (dateMatch) {
-      const releaseDate = new Date(dateMatch[1]);
+    const normalizedDate = extractIsoDate(dateString);
+    if (normalizedDate) {
+      const releaseDate = new Date(normalizedDate);
       const now = new Date();
       
       if (releaseDate > now) {

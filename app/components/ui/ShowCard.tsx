@@ -5,6 +5,7 @@ import { CalendarDays, BookmarkIcon } from "lucide-react";
 import Link from "next/link";
 import { Toggle } from "@/components/ui/toggle";
 import ImageFallback from "@/app/components/ui/ImageFallback";
+import { formatReleaseDate } from "@/app/lib/releaseDate";
 
 type ShowType = "anime" | "movies" | "series";
 
@@ -27,6 +28,12 @@ export default function ShowCard({
   bookmarked,
   onToggle,
 }: ShowCardProps) {
+  const formattedReleaseDate =
+    showReleaseDate === "Not available"
+      ? "Date TBA"
+      : showReleaseDate.includes("to ?")
+      ? formatReleaseDate(showReleaseDate.replace(/ to \?$/i, ""))
+      : formatReleaseDate(showReleaseDate);
 
   return (
     <div className="relative flex flex-col cursor-pointer group w-[180px] sm:w-full">
@@ -73,13 +80,7 @@ export default function ShowCard({
             md:group-hover:opacity-100 md:group-hover:translate-y-0 backdrop-blur-sm"
           >
             <CalendarDays size={16} />
-            <p className="font-medium">
-              {showReleaseDate === "Not available"
-                ? "Date TBA"
-                : showReleaseDate.includes("to ?")
-                ? showReleaseDate.replace(/ to \?$/i, "")
-                : showReleaseDate}
-            </p>
+            <p className="font-medium">{formattedReleaseDate}</p>
           </div>
         </div>
       </Link>

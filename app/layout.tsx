@@ -49,7 +49,7 @@ export const metadata: Metadata = {
     template: "%s | Trark"
   },
   description:
-    "Track upcoming movies, TV series (including new seasons), and anime with search, sorting, and a watchlist.",
+    "Track upcoming movies, TV series , and anime with search, sorting, and a watchlist.",
   icons: {
     icon: "/icon.png",
   },
