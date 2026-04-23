@@ -14,6 +14,27 @@ Trark solves a simple but annoying problem — keeping track of when your favori
 Currently used by 10+ active users to discover and track upcoming releases.
 
 ---
+### Hero View
+<img width="947" height="476" alt="trark1" src="https://github.com/user-attachments/assets/1c20afba-b12f-4e11-8ba6-8dcb53a03d3f" />
+
+
+
+### Media Tab View
+<img width="479" height="475" alt="trark2" src="https://github.com/user-attachments/assets/6d36d443-53d2-4085-bf5c-18ab12167f85" />
+
+
+
+### Genre Discovery View
+<img width="506" height="472" alt="trark3" src="https://github.com/user-attachments/assets/30ea0618-95d6-4b75-87ee-d296219a95d9" />
+
+
+
+### Watchlist View
+<img width="514" height="479" alt="trark4" src="https://github.com/user-attachments/assets/b04ce785-358d-42fe-ad55-aede8a0c8846" />
+
+
+
+---
 
 ## Features
 
